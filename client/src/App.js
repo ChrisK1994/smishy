@@ -72,7 +72,7 @@ function App() {
                 <button onClick={() => callPeer(receiverID.toLowerCase().trim())} className="primaryButton">Call</button>
             </div>
             <div>
-                To call your friend, ask them to open Cuckoo in their browser. <br/>
+                To call your friend, ask them to open Smishy in their browser. <br/>
                 Send your username (<span className="username">{yourID}</span>) and wait for their call <span style={{fontWeight: 600}}>OR</span> enter their username and hit call!
             </div>
         </div>
@@ -114,7 +114,6 @@ function App() {
           initiator: true,
           trickle: false,
           config: {
-    
             iceServers: [
                 {
                     urls: "stun:numb.viagenie.ca",
@@ -161,7 +160,7 @@ function App() {
         })
       })
       .catch(()=>{
-        setModalMessage('You cannot place/ receive a call without granting video and audio permissions! Please change your settings to use Cuckoo.')
+        setModalMessage('You cannot place/ receive a call without granting video and audio permissions! Please change your settings to use Smishy.')
         setModalVisible(true)
       })
     } else {
@@ -206,7 +205,7 @@ function App() {
       })
     })
     .catch(()=>{
-      setModalMessage('You cannot place/ receive a call without granting video and audio permissions! Please change your settings to use Cuckoo.')
+      setModalMessage('You cannot place/ receive a call without granting video and audio permissions! Please change your settings to use Smishy.')
       setModalVisible(true)
     })
   }
