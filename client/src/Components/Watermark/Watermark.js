@@ -1,5 +1,5 @@
 import React from 'react'
-import smishylogo from '../../Icons/smishy-logo.svg'
+import smishylogo from '../../Icons/microphone.svg'
 import './Watermark.css'
 
 function Watermark(){
