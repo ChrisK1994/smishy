@@ -1,6 +1,5 @@
 import React from 'react'
 import smishylogo from '../../Icons/smishy-logo.svg'
-// import GitHubButton from 'react-github-btn'
 import '../Navigation/Navigation.css'
 
 const Navigation = () => {
