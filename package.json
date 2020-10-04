@@ -5,7 +5,9 @@
   "main": "server.js",
   "repository": "",
   "scripts": {
-    "postinstall": "cd client && yarn build"
+    "install": "yarn install && cd ../client && yarn install",
+    "postinstall": "cd client && yarn build",
+    "start": "yarn start"
   },
   "author": "",
   "license": "MIT",
