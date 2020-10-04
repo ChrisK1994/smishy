@@ -5,7 +5,7 @@
   "main": "server.js",
   "repository": "",
   "scripts": {
-    "install": "cd ../client && yarn install",
+    "install": "cd client && yarn install",
     "postinstall": "cd client && yarn build",
     "start": "yarn start"
   },
