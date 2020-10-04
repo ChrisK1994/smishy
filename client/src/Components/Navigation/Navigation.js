@@ -1,5 +1,5 @@
 import React from 'react'
-import smishylogo from '../../Icons/microphone.svg'
+import smishylogo from '../../Icons/smishy-icon.svg'
 import '../Navigation/Navigation.css'
 
 const Navigation = () => {
