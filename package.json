@@ -4,6 +4,9 @@
   "description": "Server for React video chat client",
   "main": "server.js",
   "repository": "",
+  "scripts": {
+    "postinstall": "cd client && yarn build"
+  },
   "author": "",
   "license": "MIT",
   "dependencies": {
