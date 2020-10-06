@@ -48,10 +48,10 @@
     --home-hero-font-size-d: 1.5rem;
   }
   .u-margin-bottom-xxlarge {
-    margin-bottom: calc(var(--spacing-unit-xxxxlarge) * 1.25);
+    margin-bottom: calc(var(--spacing-unit-xxlarge) * 1.25);
   }
   .u-margin-top-xxlarge {
-    margin-top: calc(var(--spacing-unit-xxxxlarge) * 1.25);
+    margin-top: calc(var(--spacing-unit-xxlarge) * 1.25);
   }
 }
 @media screen and (min-width: 60rem){

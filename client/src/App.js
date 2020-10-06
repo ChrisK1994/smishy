@@ -58,23 +58,23 @@ function App() {
         <div className="hero flex flex-column">
             <div>
                 <div className="welcomeText">
-                    Anonymous Video Calls
+                    Chat with strangers
                 </div>
                 <div className="descriptionText">
                     across the world for free
                 </div>
             </div>
             <div>
-                <div className="actionText">Who do you want to call, <span className={copied?"username highlight copied":"username highlight"} onClick={()=>{showCopiedMessage()}}>{yourID}</span>?</div>
+                {/* <div className="actionText">Who do you want to call, <span className={copied?"username highlight copied":"username highlight"} onClick={()=>{showCopiedMessage()}}>{yourID}</span>?</div> */}
             </div>
             <div className="callBox flex">
-                <input type="text" placeholder="Friend ID" value={receiverID} onChange={e => setReceiverID(e.target.value)} className="form-input"/>
-                <button onClick={() => callPeer(receiverID.toLowerCase().trim())} className="primaryButton">Call</button>
+                {/* <input type="text" placeholder="Friend ID" value={receiverID} onChange={e => setReceiverID(e.target.value)} className="form-input"/> */}
+                <button onClick={() => callPeer(receiverID.toLowerCase().trim())} className="primaryButton">Start</button>
             </div>
-            <div>
+            {/* <div>
                 To call your friend, ask them to open Smishy in their browser. <br/>
                 Send your username (<span className="username">{yourID}</span>) and wait for their call <span style={{fontWeight: 600}}>OR</span> enter their username and hit call!
-            </div>
+            </div> */}
         </div>
     </div>
     </div>
