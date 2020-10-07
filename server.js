@@ -1,16 +1,19 @@
-const express = require('express')
-const http = require('http')
-const app = express()
-const server = http.createServer(app)
-const socket = require('socket.io')
-const io = socket(server)
-const username = require('username-generator')
-const path = require('path')
+const express = require('express');
+const http = require('http');
+const enforce = require('express-sslify');
+const app = express();
+const server = http.createServer(app);
+const socket = require('socket.io');
+const io = socket(server);
+const username = require('username-generator');
+const path = require('path');
 const { AwakeHeroku } = require('awake-heroku');
 
 AwakeHeroku.add({
     url: "https://smishy.herokuapp.com"
 })
+
+app.use(enforce.HTTPS());
 
 app.use(express.static('./client/build'));
 
@@ -21,12 +24,10 @@ app.get('*', (req,res)=>{
 const users={}
 
 io.on('connection', socket => {
-    //generate username against a socket connection and store it
     const userid=username.generateUsername('-')
     if(!users[userid]){
         users[userid] = socket.id
     }
-    //send back username
     socket.emit('yourID', userid)
     io.sockets.emit('allUsers', users)
     
