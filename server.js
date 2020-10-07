@@ -13,7 +13,7 @@ AwakeHeroku.add({
     url: "https://smishy.herokuapp.com"
 })
 
-app.use(enforce.HTTPS());
+app.use(enforce.HTTPS({ trustProtoHeader: true }));
 
 app.use(express.static('./client/build'));
 
