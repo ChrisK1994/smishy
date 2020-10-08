@@ -9,11 +9,8 @@
   "dependencies": {
     "awake-heroku": "^1.0.17",
     "express": "^4.17.1",
-<<<<<<< HEAD
     "express-sslify": "^1.2.0",
     "lodash": "^4.17.20",
-=======
->>>>>>> parent of f9bb4e3... force https
     "socket.io": "^2.3.0",
     "username-generator": "^1.1.0"
   }
