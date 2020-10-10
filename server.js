@@ -22,11 +22,16 @@ app.get('*', (req,res)=>{
 })
 
 const users={}
+const waitingUsers={}
 
 io.on('connection', socket => {
     const userid=username.generateUsername('-')
     if(!users[userid]){
         users[userid] = socket.id
+    }
+    console.log(users);
+    if(waitingUsers === {}) {
+        console.log(waitingUsers);
     }
     socket.emit('yourID', userid)
     io.sockets.emit('allUsers', users)
@@ -35,8 +40,30 @@ io.on('connection', socket => {
         delete users[userid]
     })
 
-    socket.on('callUser', (data)=>{
-        io.to(users[data.userToCall]).emit('hey', {signal: data.signalData, from: data.from})
+    socket.on('leaveQueue', ()=>{
+        delete waitingUsers[userid];
+    })
+
+    socket.on('findPatner', (data)=>{
+        if(waitingUsers === {}) {
+            waitingUsers[data.from] = data.signalData;
+            console.log("waiting users filling" + waitingUsers)
+        } else {
+            let waitingUserId = Object.keys(waitingUsers)[0];
+            let waitingUserSocket = Object.values(waitingUsers)[0];
+            delete waitingUsers[waitingUserId];
+
+            io.to(users[waitingUserId]).emit('foundPartner', data.signal)
+            io.to(users[data.from]).emit('foundPartner', waitingUserSocket)
+        }
+        console.log(waitingUsers);
+        console.log(Object.keys(waitingUsers)[0]);
+        console.log(Object.values(waitingUsers)[0]);
+        console.log(data.from);
+        console.log(data.signalData);
+        // io.to(users[data.to]).emit('foundPartner', data.signal)
+        // waitingUsers[userid] = socket.id;
+        // io.to(users[data.userToCall]).emit('hey', {signal: data.signalData, from: data.from})
     })
 
     socket.on('acceptCall', (data)=>{

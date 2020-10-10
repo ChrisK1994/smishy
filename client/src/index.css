@@ -110,6 +110,11 @@ body {
   flex-direction: column;
 }
 
+.flex-center {
+  align-items: center;
+  justify-content: center;
+}
+
 .m-auto{
   margin: 0 auto;
 }

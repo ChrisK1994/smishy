@@ -33,7 +33,7 @@ function App() {
   const [stream, setStream] = useState();
   const [receivingCall, setReceivingCall] = useState(false);
   const [caller, setCaller] = useState("");
-  const [callingFriend, setCallingFriend] = useState(false);
+  const [searchingPartner, setSearchingPartner] = useState(false);
   const [callerSignal, setCallerSignal] = useState();
   const [callAccepted, setCallAccepted] = useState(false);
   const [callRejected, setCallRejected] = useState(false);
@@ -67,9 +67,12 @@ function App() {
             <div>
                 {/* <div className="actionText">Who do you want to call, <span className={copied?"username highlight copied":"username highlight"} onClick={()=>{showCopiedMessage()}}>{yourID}</span>?</div> */}
             </div>
-            <div className="callBox flex">
+            <div className="callBox flex flex-center">
                 {/* <input type="text" placeholder="Friend ID" value={receiverID} onChange={e => setReceiverID(e.target.value)} className="form-input"/> */}
-                <button onClick={() => callPeer(receiverID.toLowerCase().trim())} className="primaryButton">Start</button>
+                {/* <button onClick={() => callPeer(receiverID.toLowerCase().trim())} className="primaryButton">Start</button> */}
+
+                {!searchingPartner && <button onClick={() => callPeer()} className="primaryButton">Start</button>}
+                {searchingPartner && <button onClick={() => endPeer()} className="primaryButton">Cancel</button>}
             </div>
             {/* <div>
                 To call your friend, ask them to open Smishy in their browser. <br/>
@@ -101,12 +104,12 @@ function App() {
     })
   }, []);
 
-  function callPeer(id) {
-    if(id!=='' && users[id] && id!==yourID){
+  function callPeer() {
+    // if(id!=='' && users[id] && id!==yourID){
       navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(stream => {
         setStream(stream);
-        setCallingFriend(true)
-        setCaller(id)
+        setSearchingPartner(true)
+        // setCaller(id)
         if (userVideo.current) {
           userVideo.current.srcObject = stream;
         }
@@ -133,7 +136,7 @@ function App() {
         myPeer.current=peer;
     
         peer.on("signal", data => {
-          socket.current.emit("callUser", { userToCall: id, signalData: data, from: yourID })
+          socket.current.emit("findPatner", { signalData: data, from: yourID })
         })
     
         peer.on("stream", stream => {
@@ -163,11 +166,15 @@ function App() {
         setModalMessage('You cannot place/ receive a call without granting video and audio permissions! Please change your settings to use Smishy.')
         setModalVisible(true)
       })
-    } else {
-      setModalMessage('We think the username entered is wrong. Please check again and retry!')
-      setModalVisible(true)
-      return
-    }
+    // } else {
+    //   setModalMessage('We think the username entered is wrong. Please check again and retry!')
+    //   setModalVisible(true)
+    //   return
+    // }
+  }
+
+  function endPeer() { 
+
   }
 
   function acceptCall() {
@@ -250,13 +257,13 @@ function App() {
   }
 
   function renderLanding() {
-    if(!callRejected && !callAccepted && !callingFriend)
+    if(!callRejected && !callAccepted && !searchingPartner)
       return 'block'
     return 'none'
   }
 
   function renderCall() {
-    if(!callRejected && !callAccepted && !callingFriend)
+    if(!callRejected && !callAccepted && !searchingPartner)
       return 'none'
     return 'block'
   }
