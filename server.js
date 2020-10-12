@@ -22,56 +22,55 @@ app.get("*", (req, res) => {
   res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
 });
 
-const users = {};
-const waitingUsers = {};
+const users = [];
+const queue = [];
 
 io.on("connection", (socket) => {
-  const userid = username.generateUsername("-");
-  if (!users[userid]) {
-    users[userid] = socket.id;
+  if (!_.includes(user, socket.id)) {
+    users.push(socket.id);
   }
-  socket.emit("yourID", userid);
+  socket.emit("yourID", socket.id);
   io.sockets.emit("allUsers", users);
 
   socket.on("disconnect", () => {
-    delete users[userid];
+    _.remove(users, (user) => { user === socket.id })
   });
 
   socket.on("leaveQueue", () => {
-    delete waitingUsers[userid];
+    _.remove(queue, (user) => { user === socket.id })
   });
 
   socket.on("findPartner", (data) => {
-    if (_.isEmpty(waitingUsers)) {
-      waitingUsers[data.from] = socket.id;
+    if (!queue.length) {
+      queue.push(socket.id);
     } else {
       socket.emit("chatInit");
     }
   });
 
   socket.on("chatInit", (data) => {
-    let waitingUserId = Object.keys(waitingUsers)[0];
-    delete waitingUsers[waitingUserId];
 
-    io.to(users[waitingUserId]).emit("chatOffer", {
+    io.to(queue[0]).emit("chatOffer", {
       signal: data.signalData,
       from: data.from,
     });
+
+    queue = [];
   });
 
   socket.on("chatAccepted", (data) => {
-    io.to(users[data.to]).emit("chatAccepted", {
+    io.to(data.to).emit("chatAccepted", {
       signal: data.signal,
-      from: userid,
+      from: socket.id,
     });
   });
 
   socket.on("close", (data) => {
-    io.to(users[data.to]).emit("close");
+    io.to(data.to).emit("close");
   });
 
   socket.on("rejected", (data) => {
-    io.to(users[data.to]).emit("rejected");
+    io.to(data.to).emit("rejected");
   });
 });
 
