@@ -2,6 +2,7 @@
   max-width: calc(var(--container-width) + var(--spacing-unit)*2);
   margin: 0 auto;
   padding: 0 var(--spacing-unit);
+  height: 70px;
 }
 
 .headerContainer{
@@ -60,6 +61,12 @@
   margin-left: .2em;
   display: flow-root;
   font-weight: 700;
+  font-variation-settings: "wdth" 85;
+}
+
+.onlineText{
+  margin-left: .2em;
+  display: flow-root;
   font-variation-settings: "wdth" 85;
 }
 

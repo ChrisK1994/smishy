@@ -1,9 +1,9 @@
 
 .watermark{
-    height: 1rem;
+    height: 4rem;
     position: absolute;
-    top: 2px;
-    right: 2px;
+    top: 80%;
+    left: 6%;
     display: flex;
     justify-content: center;
     align-items: center;

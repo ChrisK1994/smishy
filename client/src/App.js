@@ -29,7 +29,7 @@ const ringtoneSound = new Howl({
 
 function App() {
   const [yourID, setYourID] = useState("");
-  const [users, setUsers] = useState({});
+  const [users, setUsers] = useState([]);
   const [stream, setStream] = useState();
   const [caller, setCaller] = useState("");
   const [searchingPartner, setSearchingPartner] = useState(false);
@@ -51,8 +51,8 @@ function App() {
 
   let landingHTML = (
     <>
-      <Navigation />
-      <main>
+      <Navigation online={users.length}/>
+      <main class="chatContainer">
         <div className="u-margin-top-xxlarge u-margin-bottom-xxlarge">
           <div className="o-wrapper-l">
             <div className="hero flex flex-column">
@@ -88,6 +88,7 @@ function App() {
       ID.current = id;
     });
     socket.current.on("allUsers", (users) => {
+      console.log(users);
       setUsers(users);
     });
 
@@ -135,7 +136,7 @@ function App() {
         })
         .catch((err) => {
           setModalMessage(
-            "You cannot place/ receive a call without granting video and audio permissions! Please change your settings to use Smishy. OFFERED"
+            "Aby użyć tej aplikacji potrzebujesz kamery oraz mikrofonu."
           );
           setModalVisible(true);
         });
@@ -190,7 +191,7 @@ function App() {
 
           socket.current.on("chatAccepted", (data) => {
             setChatOnline(true);
-            setCaller(data.from)
+            setCaller(data.from);
             peer.signal(data.signal);
           });
 
@@ -204,7 +205,7 @@ function App() {
         })
         .catch(() => {
           setModalMessage(
-            "You cannot place/ receive a call without granting video and audio permissions! Please change your settings to use Smishy."
+            "Aby użyć tej aplikacji potrzebujesz kamery oraz mikrofonu."
           );
           setModalVisible(true);
         });
@@ -386,8 +387,23 @@ function App() {
   }
 
   return (
+    // style={{ display: renderCall() }}
     <>
-      <div style={{ display: renderLanding() }}>
+      <span className="callContainer">
+        <Suspense fallback={<div>Loading...</div>}>
+          <Watermark />
+        </Suspense>
+        <div className="userVideoContainer">{UserVideo}</div>
+        <div className="partnerVideoContainer">{PartnerVideo}</div>
+        <div className="controlsContainer flex">
+          {audioControl}
+          {videoControl}
+          {screenShare}
+          {fullscreenButton}
+          {hangUp}
+        </div>
+      </span>
+      <span className="chatContainer">
         {landingHTML}
         <Rodal
           visible={modalVisible}
@@ -399,21 +415,7 @@ function App() {
         >
           <div>{modalMessage}</div>
         </Rodal>
-      </div>
-      <div className="callContainer" style={{ display: renderCall() }}>
-        <Suspense fallback={<div>Loading...</div>}>
-          <Watermark />
-        </Suspense>
-        <div className="partnerVideoContainer">{PartnerVideo}</div>
-        <div className="userVideoContainer">{UserVideo}</div>
-        <div className="controlsContainer flex">
-          {audioControl}
-          {videoControl}
-          {screenShare}
-          {fullscreenButton}
-          {hangUp}
-        </div>
-      </div>
+      </span>
     </>
   );
 }

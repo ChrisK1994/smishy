@@ -22,40 +22,42 @@ app.get("*", (req, res) => {
   res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
 });
 
-const users = [];
-const queue = [];
+let users = [];
+let queue = [];
 
 io.on("connection", (socket) => {
-  if (!_.includes(user, socket.id)) {
+  if (!_.includes(users, socket.id)) {
     users.push(socket.id);
   }
   socket.emit("yourID", socket.id);
   io.sockets.emit("allUsers", users);
 
   socket.on("disconnect", () => {
-    _.remove(users, (user) => { user === socket.id })
+    _.pull(users, socket.id)
   });
 
   socket.on("leaveQueue", () => {
-    _.remove(queue, (user) => { user === socket.id })
+    _.pull(queue, socket.id)
   });
 
   socket.on("findPartner", (data) => {
+    console.log(users);
+    console.log(queue);
     if (!queue.length) {
       queue.push(socket.id);
     } else {
+      queue = [];
       socket.emit("chatInit");
     }
+    console.log(users);
+    console.log(queue);
   });
 
   socket.on("chatInit", (data) => {
-
     io.to(queue[0]).emit("chatOffer", {
       signal: data.signalData,
       from: data.from,
     });
-
-    queue = [];
   });
 
   socket.on("chatAccepted", (data) => {
