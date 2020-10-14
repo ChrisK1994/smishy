@@ -41,7 +41,7 @@ function App() {
   const [audioMuted, setAudioMuted] = useState(false);
   const [videoMuted, setVideoMuted] = useState(false);
   const [isfullscreen, setFullscreen] = useState(false);
-  const [copied, setCopied] = useState(false);
+  const [nextDisabled, setNextDisabled] = useState(true);
 
   const userVideo = useRef();
   const ID = useRef();
@@ -52,21 +52,24 @@ function App() {
   let landingHTML = (
     <>
       <Navigation online={users.length}/>
-      <main class="chatContainer">
-        <div className="u-margin-top-xxlarge u-margin-bottom-xxlarge">
+      <main>
+        <div className="chatContainer u-margin-top-xxlarge u-margin-bottom-xxlarge">
           <div className="o-wrapper-l">
             <div className="hero flex flex-column">
               <div>
                 <div className="welcomeText">Chat with strangers</div>
                 <div className="descriptionText">across the world for free</div>
+                {nextDisabled && (
+                  <div className="descriptionText">please enable your camera and microphone then refresh the page</div>
+                )}
               </div>
               <div className="callBox flex flex-center">
-                {!searchingPartner && (
+                {!searchingPartner && !nextDisabled && (
                   <button onClick={() => next()} className="primaryButton">
                     Next
                   </button>
                 )}
-                {searchingPartner && (
+                {searchingPartner && !nextDisabled && (
                   <button onClick={() => cancel()} className="primaryButton">
                     Cancel
                   </button>
@@ -81,6 +84,7 @@ function App() {
   );
 
   useEffect(() => {
+    initVideo();
     socket.current = io.connect("/");
 
     socket.current.on("yourID", (id) => {
@@ -96,121 +100,106 @@ function App() {
       setCaller(data.from);
       setCallerSignal(data.signal);
       let from = data.from;
+      
+      const peer = new Peer({
+        initiator: false,
+        trickle: false,
+        stream: userVideo.current.srcObject,
+      });
 
-      navigator.mediaDevices
-        .getUserMedia({ video: true, audio: true })
-        .then((stream) => {
-          setStream(stream);
-          if (userVideo.current) {
-            userVideo.current.srcObject = stream;
-          }
-          const peer = new Peer({
-            initiator: false,
-            trickle: false,
-            stream: stream,
-          });
+      myPeer.current = peer;
 
-          myPeer.current = peer;
-
-          peer.on("signal", (data) => {
-            socket.current.emit("chatAccepted", {
-              signal: data,
-              to: from,
-            });
-          });
-
-          peer.on("stream", (stream) => {
-            setChatOnline(true);
-            partnerVideo.current.srcObject = stream;
-          });
-
-          peer.on("error", (err) => {
-            endCall();
-          });
-
-          peer.signal(data.signal);
-
-          socket.current.on("close", () => {
-            window.location.reload();
-          });
-        })
-        .catch((err) => {
-          setModalMessage(
-            "Aby użyć tej aplikacji potrzebujesz kamery oraz mikrofonu."
-          );
-          setModalVisible(true);
+      peer.on("signal", (data) => {
+        socket.current.emit("chatAccepted", {
+          signal: data,
+          to: from,
         });
+      });
+
+      peer.on("stream", (stream) => {
+        setChatOnline(true);
+        partnerVideo.current.srcObject = stream;
+      });
+
+      peer.on("error", (err) => {
+        endCall();
+      });
+
+      peer.signal(data.signal);
+
+      socket.current.on("close", () => {
+        window.location.reload();
+      });
     });
 
     socket.current.on("chatInit", (data) => {
-      navigator.mediaDevices
-        .getUserMedia({ video: true, audio: true })
-        .then((stream) => {
-          setStream(stream);
-          if (userVideo.current) {
-            userVideo.current.srcObject = stream;
-          }
-          const peer = new Peer({
-            initiator: true,
-            trickle: false,
-            config: {
-              iceServers: [
-                {
-                  urls: "stun:numb.viagenie.ca",
-                  username: "sultan1640@gmail.com",
-                  credential: "98376683",
-                },
-                {
-                  urls: "turn:numb.viagenie.ca",
-                  username: "sultan1640@gmail.com",
-                  credential: "98376683",
-                },
-              ],
+      const peer = new Peer({
+        initiator: true,
+        trickle: false,
+        config: {
+          iceServers: [
+            {
+              urls: "stun:numb.viagenie.ca",
+              username: "sultan1640@gmail.com",
+              credential: "98376683",
             },
-            stream: stream,
-          });
+            {
+              urls: "turn:numb.viagenie.ca",
+              username: "sultan1640@gmail.com",
+              credential: "98376683",
+            },
+          ],
+        },
+        stream: userVideo.current.srcObject,
+      });
 
-          myPeer.current = peer;
+      myPeer.current = peer;
 
-          peer.on("signal", (data) => {
-            socket.current.emit("chatInit", {
-              signalData: data,
-              from: ID.current,
-            });
-          });
-
-          peer.on("stream", (stream) => {
-            if (partnerVideo.current) {
-              partnerVideo.current.srcObject = stream;
-            }
-          });
-
-          peer.on("error", (err) => {
-            endCall();
-          });
-
-          socket.current.on("chatAccepted", (data) => {
-            setChatOnline(true);
-            setCaller(data.from);
-            peer.signal(data.signal);
-          });
-
-          socket.current.on("close", () => {
-            window.location.reload();
-          });
-
-          socket.current.on("rejected", () => {
-            window.location.reload();
-          });
-        })
-        .catch(() => {
-          setModalMessage(
-            "Aby użyć tej aplikacji potrzebujesz kamery oraz mikrofonu."
-          );
-          setModalVisible(true);
+      peer.on("signal", (data) => {
+        socket.current.emit("chatInit", {
+          signalData: data,
+          from: ID.current,
         });
+      });
+
+      peer.on("stream", (stream) => {
+        if (partnerVideo.current) {
+          partnerVideo.current.srcObject = stream;
+        }
+      });
+
+      peer.on("error", (err) => {
+        endCall();
+      });
+
+      socket.current.on("chatAccepted", (data) => {
+        setChatOnline(true);
+        setCaller(data.from);
+        peer.signal(data.signal);
+      });
+
+      socket.current.on("close", () => {
+        window.location.reload();
+      });
+
+      socket.current.on("rejected", () => {
+        window.location.reload();
+      });
     });
   }, []);
+
+  function initVideo() {
+    console.log('co jest kurwa');
+    navigator.mediaDevices
+    .getUserMedia({ video: true, audio: true })
+    .then((stream) => {
+      setStream(stream);
+      setNextDisabled(false);
+      if (userVideo.current) {
+        userVideo.current.srcObject = stream;
+      }
+    })
+  }
 
   function next() {
     setSearchingPartner(true);
@@ -317,73 +306,77 @@ function App() {
   }
 
   let audioControl;
-  if (audioMuted) {
-    audioControl = (
-      <span className="iconContainer" onClick={() => toggleMuteAudio()}>
-        <img src={microphonestop} alt="Unmute audio" />
-      </span>
-    );
-  } else {
-    audioControl = (
-      <span className="iconContainer" onClick={() => toggleMuteAudio()}>
-        <img src={microphone} alt="Mute audio" />
-      </span>
-    );
-  }
-
   let videoControl;
-  if (videoMuted) {
-    videoControl = (
-      <span className="iconContainer" onClick={() => toggleMuteVideo()}>
-        <img src={camerastop} alt="Resume video" />
-      </span>
-    );
-  } else {
-    videoControl = (
-      <span className="iconContainer" onClick={() => toggleMuteVideo()}>
-        <img src={camera} alt="Stop audio" />
-      </span>
-    );
-  }
-
-  let screenShare = (
-    <span className="iconContainer" onClick={() => shareScreen()}>
-      <img src={share} alt="Share screen" />
-    </span>
-  );
-  if (isMobileDevice()) {
-    screenShare = <></>;
-  }
-
-  let hangUp = (
-    <span className="iconContainer" onClick={() => endCall()}>
-      <img src={hangup} alt="End call" />
-    </span>
-  );
-
   let fullscreenButton;
-  if (isfullscreen) {
-    fullscreenButton = (
-      <span
-        className="iconContainer"
-        onClick={() => {
-          setFullscreen(false);
-        }}
-      >
-        <img src={minimize} alt="fullscreen" />
+  let screenShare;
+  let hangUp;
+  if (chatOnline) {
+    if (audioMuted) {
+      audioControl = (
+        <span className="iconContainer" onClick={() => toggleMuteAudio()}>
+          <img src={microphonestop} alt="Unmute audio" />
+        </span>
+      );
+    } else {
+      audioControl = (
+        <span className="iconContainer" onClick={() => toggleMuteAudio()}>
+          <img src={microphone} alt="Mute audio" />
+        </span>
+      );
+    }
+
+    if (videoMuted) {
+      videoControl = (
+        <span className="iconContainer" onClick={() => toggleMuteVideo()}>
+          <img src={camerastop} alt="Resume video" />
+        </span>
+      );
+    } else {
+      videoControl = (
+        <span className="iconContainer" onClick={() => toggleMuteVideo()}>
+          <img src={camera} alt="Stop audio" />
+        </span>
+      );
+    }
+
+    screenShare = (
+      <span className="iconContainer" onClick={() => shareScreen()}>
+        <img src={share} alt="Share screen" />
       </span>
     );
-  } else {
-    fullscreenButton = (
-      <span
-        className="iconContainer"
-        onClick={() => {
-          setFullscreen(true);
-        }}
-      >
-        <img src={fullscreen} alt="fullscreen" />
+    if (isMobileDevice()) {
+      screenShare = <></>;
+    }
+
+    hangUp = (
+      <span className="iconContainer" onClick={() => endCall()}>
+        <img src={hangup} alt="End call" />
       </span>
     );
+
+    if (isfullscreen) {
+      fullscreenButton = (
+        <span
+          className="iconContainer"
+          onClick={() => {
+            setFullscreen(false);
+          }}
+        >
+          <img src={minimize} alt="fullscreen" />
+        </span>
+      );
+    } else {
+      fullscreenButton = (
+        <span
+          className="iconContainer"
+          onClick={() => {
+            setFullscreen(true);
+          }}
+        >
+          <img src={fullscreen} alt="fullscreen" />
+        </span>
+      );
+    }
   }
 
   return (
@@ -403,7 +396,7 @@ function App() {
           {hangUp}
         </div>
       </span>
-      <span className="chatContainer">
+      <span>
         {landingHTML}
         <Rodal
           visible={modalVisible}
