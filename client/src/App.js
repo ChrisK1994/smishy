@@ -1,13 +1,10 @@
 import React, { useEffect, useState, useRef, Suspense } from "react";
 import io from "socket.io-client";
 import Peer from "simple-peer";
-import Rodal from "rodal";
-import { Howl } from "howler";
 
 import Navigation from "./Components/Navigation/Navigation";
 import Footer from "./Components/Footer/Footer";
 
-import "rodal/lib/rodal.css";
 
 import camera from "./Icons/camera.svg";
 import camerastop from "./Icons/camera-stop.svg";
@@ -17,15 +14,8 @@ import share from "./Icons/share.svg";
 import hangup from "./Icons/hang-up.svg";
 import fullscreen from "./Icons/fullscreen.svg";
 import minimize from "./Icons/minimize.svg";
-import ringtone from "./Sounds/ringtone.mp3";
 
 const Watermark = React.lazy(() => import("./Components/Watermark/Watermark"));
-
-const ringtoneSound = new Howl({
-  src: [ringtone],
-  loop: true,
-  preload: true,
-});
 
 function App() {
   const [yourID, setYourID] = useState("");
@@ -33,11 +23,7 @@ function App() {
   const [stream, setStream] = useState();
   const [caller, setCaller] = useState("");
   const [searchingPartner, setSearchingPartner] = useState(false);
-  const [callerSignal, setCallerSignal] = useState();
   const [chatOnline, setChatOnline] = useState(false);
-  const [receiverID, setReceiverID] = useState("");
-  const [modalVisible, setModalVisible] = useState(false);
-  const [modalMessage, setModalMessage] = useState("");
   const [audioMuted, setAudioMuted] = useState(false);
   const [videoMuted, setVideoMuted] = useState(false);
   const [isfullscreen, setFullscreen] = useState(false);
@@ -64,12 +50,12 @@ function App() {
                 )}
               </div>
               <div className="callBox flex flex-center">
-                {!searchingPartner && !nextDisabled && (
+                {!searchingPartner && !nextDisabled && !chatOnline && (
                   <button onClick={() => next()} className="primaryButton">
                     Next
                   </button>
                 )}
-                {searchingPartner && !nextDisabled && (
+                {searchingPartner && !nextDisabled && !chatOnline && (
                   <button onClick={() => cancel()} className="primaryButton">
                     Cancel
                   </button>
@@ -91,14 +77,13 @@ function App() {
       setYourID(id);
       ID.current = id;
     });
+
     socket.current.on("allUsers", (users) => {
-      console.log(users);
       setUsers(users);
     });
 
     socket.current.on("chatOffer", (data) => {
       setCaller(data.from);
-      setCallerSignal(data.signal);
       let from = data.from;
       
       const peer = new Peer({
@@ -106,6 +91,8 @@ function App() {
         trickle: false,
         stream: userVideo.current.srcObject,
       });
+
+      peer._debug = console.log;
 
       myPeer.current = peer;
 
@@ -128,7 +115,11 @@ function App() {
       peer.signal(data.signal);
 
       socket.current.on("close", () => {
-        window.location.reload();
+        setCaller("");
+        setChatOnline(false);
+        setSearchingPartner(false);
+        setNextDisabled(false);
+        myPeer.current.destroy();
       });
     });
 
@@ -152,6 +143,8 @@ function App() {
         },
         stream: userVideo.current.srcObject,
       });
+
+      peer._debug = console.log;
 
       myPeer.current = peer;
 
@@ -179,17 +172,16 @@ function App() {
       });
 
       socket.current.on("close", () => {
-        window.location.reload();
-      });
-
-      socket.current.on("rejected", () => {
-        window.location.reload();
+        setCaller("");
+        setChatOnline(false);
+        setSearchingPartner(false);
+        setNextDisabled(false);
+        myPeer.current.destroy();
       });
     });
   }, []);
 
   function initVideo() {
-    console.log('co jest kurwa');
     navigator.mediaDevices
     .getUserMedia({ video: true, audio: true })
     .then((stream) => {
@@ -213,10 +205,12 @@ function App() {
   }
 
   function endCall() {
-    myPeer.current.destroy();
-    setChatOnline(false);
     socket.current.emit("close", { to: caller });
-    window.location.reload();
+    setCaller("");
+    setChatOnline(false);
+    setSearchingPartner(false);
+    setNextDisabled(false);
+    myPeer.current.destroy();
   }
 
   function shareScreen() {
@@ -252,16 +246,6 @@ function App() {
       setVideoMuted(!videoMuted);
       stream.getVideoTracks()[0].enabled = videoMuted;
     }
-  }
-
-  function renderLanding() {
-    if (chatOnline) return "none";
-    return "block";
-  }
-
-  function renderCall() {
-    if (chatOnline) return "block";
-    return "none";
   }
 
   function isMobileDevice() {
@@ -380,7 +364,6 @@ function App() {
   }
 
   return (
-    // style={{ display: renderCall() }}
     <>
       <span className="callContainer">
         <Suspense fallback={<div>Loading...</div>}>
@@ -398,16 +381,6 @@ function App() {
       </span>
       <span>
         {landingHTML}
-        <Rodal
-          visible={modalVisible}
-          onClose={() => setModalVisible(false)}
-          width={20}
-          height={5}
-          measure={"em"}
-          closeOnEsc={true}
-        >
-          <div>{modalMessage}</div>
-        </Rodal>
       </span>
     </>
   );
