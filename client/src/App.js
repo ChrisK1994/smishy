@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useRef, Suspense } from "react";
+import React, { useEffect, useState, useRef, Suspense } from "react";
 import io from "socket.io-client";
 import Peer from "simple-peer";
 
@@ -97,7 +97,6 @@ function App() {
       myPeer.current = peer;
 
       peer.on("signal", (data) => {
-        console.log(peer);
         socket.current.emit("chatAccepted", {
           signal: data,
           to: from,
@@ -110,8 +109,6 @@ function App() {
       });
 
       peer.on("error", (err) => {
-        console.log("ERROR KURWA");
-        console.log(err);
         myPeer.current.destroy();
         socket.current.emit("close", { to: caller });
         setCaller("");
@@ -170,8 +167,6 @@ function App() {
       });
 
       peer.on("error", (err) => {
-        console.log("ERROR KURWA");
-        console.log(err);
         myPeer.current.destroy();
         socket.current.emit("close", { to: caller });
         setCaller("");
@@ -181,7 +176,6 @@ function App() {
       });
 
       socket.current.on("chatAccepted", (data) => {
-        console.log(peer);
         setChatOnline(true);
         setCaller(data.from);
         peer.signal(data.signal);
@@ -222,7 +216,7 @@ function App() {
 
   function endCall() {
     myPeer.current.destroy();
-    // socket.current.emit("close", { to: caller });
+    socket.current.emit("close", { to: caller });
     setCaller("");
     setChatOnline(false);
     setSearchingPartner(false);

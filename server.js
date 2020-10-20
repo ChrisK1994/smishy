@@ -41,23 +41,14 @@ io.on("connection", (socket) => {
   });
 
   socket.on("findPartner", (data) => {
-    console.log(users);
-    console.log(queue);
     if (!queue.length) {
       queue.push(socket.id);
     } else {
       socket.emit("chatInit");
     }
-    console.log(users);
-    console.log(queue);
   });
 
   socket.on("chatInit", (data) => {
-    console.log("chatInit");
-    console.log(data.signalData);
-    console.log(data.from);
-    console.log("chatOffer");
-    console.log()
     io.to(queue[0]).emit("chatOffer", {
       signal: data.signalData,
       from: data.from,
@@ -66,9 +57,6 @@ io.on("connection", (socket) => {
   });
 
   socket.on("chatAccepted", (data) => {
-    console.log("chatAccepted");
-    console.log(data.signal);
-    console.log(socket.id);
     io.to(data.to).emit("chatAccepted", {
       signal: data.signal,
       from: socket.id,
@@ -76,8 +64,6 @@ io.on("connection", (socket) => {
   });
 
   socket.on("close", (data) => {
-    console.log("close");
-    console.log(data.to);
     io.to(data.to).emit("close");
   });
 });
