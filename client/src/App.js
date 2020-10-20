@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, Suspense } from "react";
+import React, { useEffect, useState, useCallback, useRef, Suspense } from "react";
 import io from "socket.io-client";
 import Peer from "simple-peer";
 
@@ -33,7 +33,7 @@ function App() {
   const ID = useRef();
   const partnerVideo = useRef();
   const socket = useRef();
-  const myPeer = useRef();
+  let myPeer = useRef();
 
   let landingHTML = (
     <>
@@ -97,6 +97,7 @@ function App() {
       myPeer.current = peer;
 
       peer.on("signal", (data) => {
+        console.log(peer);
         socket.current.emit("chatAccepted", {
           signal: data,
           to: from,
@@ -109,7 +110,14 @@ function App() {
       });
 
       peer.on("error", (err) => {
-        endCall();
+        console.log("ERROR KURWA");
+        console.log(err);
+        myPeer.current.destroy();
+        socket.current.emit("close", { to: caller });
+        setCaller("");
+        setChatOnline(false);
+        setSearchingPartner(false);
+        setNextDisabled(false);
       });
 
       peer.signal(data.signal);
@@ -162,10 +170,18 @@ function App() {
       });
 
       peer.on("error", (err) => {
-        endCall();
+        console.log("ERROR KURWA");
+        console.log(err);
+        myPeer.current.destroy();
+        socket.current.emit("close", { to: caller });
+        setCaller("");
+        setChatOnline(false);
+        setSearchingPartner(false);
+        setNextDisabled(false);
       });
 
       socket.current.on("chatAccepted", (data) => {
+        console.log(peer);
         setChatOnline(true);
         setCaller(data.from);
         peer.signal(data.signal);
@@ -205,12 +221,12 @@ function App() {
   }
 
   function endCall() {
-    socket.current.emit("close", { to: caller });
+    myPeer.current.destroy();
+    // socket.current.emit("close", { to: caller });
     setCaller("");
     setChatOnline(false);
     setSearchingPartner(false);
     setNextDisabled(false);
-    myPeer.current.destroy();
   }
 
   function shareScreen() {
