@@ -33,41 +33,7 @@ function App() {
   const ID = useRef();
   const partnerVideo = useRef();
   const socket = useRef();
-  let myPeer = useRef();
-
-  let landingHTML = (
-    <>
-      <Navigation online={users.length}/>
-      <main>
-        <div className="chatContainer u-margin-top-xxlarge u-margin-bottom-xxlarge">
-          <div className="o-wrapper-l">
-            <div className="hero flex flex-column">
-              <div>
-                <div className="welcomeText">Chat with strangers</div>
-                <div className="descriptionText">across the world for free</div>
-                {nextDisabled && (
-                  <div className="descriptionText">please enable your camera and microphone then refresh the page</div>
-                )}
-              </div>
-              <div className="callBox flex flex-center">
-                {!searchingPartner && !nextDisabled && !chatOnline && (
-                  <button onClick={() => next()} className="primaryButton">
-                    Next
-                  </button>
-                )}
-                {searchingPartner && !nextDisabled && !chatOnline && (
-                  <button onClick={() => cancel()} className="primaryButton">
-                    Cancel
-                  </button>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      </main>
-      <Footer />
-    </>
-  );
+  const myPeer = useRef();
 
   useEffect(() => {
     initVideo();
@@ -82,7 +48,7 @@ function App() {
       setUsers(users);
     });
 
-    socket.current.on("chatOffer", (data) => {
+    socket.current.on("initiatorOffer", (data) => {
       setCaller(data.from);
       let from = data.from;
       
@@ -97,7 +63,7 @@ function App() {
       myPeer.current = peer;
 
       peer.on("signal", (data) => {
-        socket.current.emit("chatAccepted", {
+        socket.current.emit("initiatorAccepted", {
           signal: data,
           to: from,
         });
@@ -109,26 +75,17 @@ function App() {
       });
 
       peer.on("error", (err) => {
-        myPeer.current.destroy();
-        socket.current.emit("close", { to: caller });
-        setCaller("");
-        setChatOnline(false);
-        setSearchingPartner(false);
-        setNextDisabled(false);
+        endCall();
       });
 
       peer.signal(data.signal);
 
       socket.current.on("close", () => {
-        setCaller("");
-        setChatOnline(false);
-        setSearchingPartner(false);
-        setNextDisabled(false);
-        myPeer.current.destroy();
+        cleanCall();
       });
     });
 
-    socket.current.on("chatInit", (data) => {
+    socket.current.on("foundPartner", () => {
       const peer = new Peer({
         initiator: true,
         trickle: false,
@@ -154,7 +111,7 @@ function App() {
       myPeer.current = peer;
 
       peer.on("signal", (data) => {
-        socket.current.emit("chatInit", {
+        socket.current.emit("initiatorReady", {
           signalData: data,
           from: ID.current,
         });
@@ -167,26 +124,17 @@ function App() {
       });
 
       peer.on("error", (err) => {
-        myPeer.current.destroy();
-        socket.current.emit("close", { to: caller });
-        setCaller("");
-        setChatOnline(false);
-        setSearchingPartner(false);
-        setNextDisabled(false);
+        endCall();
       });
 
-      socket.current.on("chatAccepted", (data) => {
+      socket.current.on("chatReady", (data) => {
         setChatOnline(true);
         setCaller(data.from);
         peer.signal(data.signal);
       });
 
       socket.current.on("close", () => {
-        setCaller("");
-        setChatOnline(false);
-        setSearchingPartner(false);
-        setNextDisabled(false);
-        myPeer.current.destroy();
+        cleanCall();
       });
     });
   }, []);
@@ -215,8 +163,12 @@ function App() {
   }
 
   function endCall() {
-    myPeer.current.destroy();
     socket.current.emit("close", { to: caller });
+    cleanCall();
+  }
+
+  function cleanCall() {
+    myPeer.current.destroy();
     setCaller("");
     setChatOnline(false);
     setSearchingPartner(false);
@@ -372,6 +324,40 @@ function App() {
       );
     }
   }
+
+  let landingHTML = (
+    <>
+      <Navigation online={users.length}/>
+      <main>
+        <div className="chatContainer u-margin-top-xxlarge u-margin-bottom-xxlarge">
+          <div className="o-wrapper-l">
+            <div className="hero flex flex-column">
+              <div>
+                <div className="welcomeText">Chat with strangers</div>
+                <div className="descriptionText">across the world for free</div>
+                {nextDisabled && (
+                  <div className="descriptionText">please enable your camera and microphone then refresh the page</div>
+                )}
+              </div>
+              <div className="callBox flex flex-center">
+                {!searchingPartner && !nextDisabled && !chatOnline && (
+                  <button onClick={() => next()} className="primaryButton">
+                    Next
+                  </button>
+                )}
+                {searchingPartner && !nextDisabled && !chatOnline && (
+                  <button onClick={() => cancel()} className="primaryButton">
+                    Cancel
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+      <Footer />
+    </>
+  );
 
   return (
     <>

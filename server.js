@@ -44,20 +44,20 @@ io.on("connection", (socket) => {
     if (!queue.length) {
       queue.push(socket.id);
     } else {
-      socket.emit("chatInit");
+      socket.emit("foundPartner");
     }
   });
 
-  socket.on("chatInit", (data) => {
-    io.to(queue[0]).emit("chatOffer", {
+  socket.on("initiatorReady", (data) => {
+    io.to(queue[0]).emit("initiatorOffer", {
       signal: data.signalData,
       from: data.from,
     });
     queue = [];
   });
 
-  socket.on("chatAccepted", (data) => {
-    io.to(data.to).emit("chatAccepted", {
+  socket.on("initiatorAccepted", (data) => {
+    io.to(data.to).emit("chatReady", {
       signal: data.signal,
       from: socket.id,
     });
