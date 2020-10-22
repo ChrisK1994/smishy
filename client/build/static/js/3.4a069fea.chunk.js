@@ -1,0 +1,2 @@
+(this.webpackJsonpclient=this.webpackJsonpclient||[]).push([[3],{123:function(e,a,t){},124:function(e,a,t){"use strict";t.r(a);var n=t(0),s=t.n(n),c=t(46),i=t.n(c);t(123);a.default=function(){return s.a.createElement("div",{className:"watermark"},s.a.createElement("img",{className:"logoImage",src:i.a,alt:"Smishy Logo"}),s.a.createElement("span",{className:"logoText"},"Smishy"))}}}]);
+//# sourceMappingURL=3.4a069fea.chunk.js.map

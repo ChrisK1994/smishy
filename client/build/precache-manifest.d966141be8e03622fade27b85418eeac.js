@@ -1,39 +1,35 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "951903fd0c8908724838d95f8d45a1b4",
+    "revision": "f9c0ac8a7e8e243d28d492b7145747bf",
     "url": "/index.html"
   },
   {
-    "revision": "5b48fdd58911822c9628",
-    "url": "/static/css/2.190caba9.chunk.css"
+    "revision": "da7e83335b8a5ca593d4",
+    "url": "/static/css/3.e4dafdfc.chunk.css"
   },
   {
-    "revision": "5a8a277295313d378678",
-    "url": "/static/css/3.d06eeaec.chunk.css"
+    "revision": "9af5f4c0befc47f664a2",
+    "url": "/static/css/main.a2f8fcfd.chunk.css"
   },
   {
-    "revision": "c867c8f972c84b6bf294",
-    "url": "/static/css/main.4a92a0f9.chunk.css"
+    "revision": "292f5cd1ecf59538ea1d",
+    "url": "/static/js/2.b631521d.chunk.js"
   },
   {
-    "revision": "5b48fdd58911822c9628",
-    "url": "/static/js/2.6b98004a.chunk.js"
+    "revision": "43f74f611ad17803f5a3f9e7ecd40243",
+    "url": "/static/js/2.b631521d.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "0591dc3f8979d61906bef308dafca80a",
-    "url": "/static/js/2.6b98004a.chunk.js.LICENSE.txt"
+    "revision": "da7e83335b8a5ca593d4",
+    "url": "/static/js/3.4a069fea.chunk.js"
   },
   {
-    "revision": "5a8a277295313d378678",
-    "url": "/static/js/3.3b859cc5.chunk.js"
+    "revision": "9af5f4c0befc47f664a2",
+    "url": "/static/js/main.9a4c4512.chunk.js"
   },
   {
-    "revision": "c867c8f972c84b6bf294",
-    "url": "/static/js/main.81e26488.chunk.js"
-  },
-  {
-    "revision": "537240f2867e28b1e845",
-    "url": "/static/js/runtime-main.5bd36a85.js"
+    "revision": "59dd6e93e252f182438c",
+    "url": "/static/js/runtime-main.8f230343.js"
   },
   {
     "revision": "feb48833bac136f91aab9b27583fb981",
@@ -62,10 +58,6 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
     "revision": "612b180a63a0a715724db3a0be971688",
     "url": "/static/media/minimize.612b180a.svg"
-  },
-  {
-    "revision": "0be3c651e1532de63056a20e2f341bde",
-    "url": "/static/media/ringtone.0be3c651.mp3"
   },
   {
     "revision": "269beb7bd8d4931225aadb7103aa2be9",

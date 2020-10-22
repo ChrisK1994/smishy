@@ -81,7 +81,7 @@ function App() {
       peer.signal(data.signal);
 
       socket.current.on("close", () => {
-        cleanCall();
+        window.location.reload();
       });
     });
 
@@ -134,7 +134,7 @@ function App() {
       });
 
       socket.current.on("close", () => {
-        cleanCall();
+        window.location.reload();
       });
     });
   }, []);
@@ -163,16 +163,9 @@ function App() {
   }
 
   function endCall() {
-    socket.current.emit("close", { to: caller });
-    cleanCall();
-  }
-
-  function cleanCall() {
     myPeer.current.destroy();
-    setCaller("");
-    setChatOnline(false);
-    setSearchingPartner(false);
-    setNextDisabled(false);
+    socket.current.emit("close", { to: caller });
+    window.location.reload();
   }
 
   function shareScreen() {
