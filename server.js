@@ -26,6 +26,12 @@ let users = [];
 let queue = [];
 
 io.on("connection", (socket) => {
+  console.log("your socket is" + socket.id);
+
+  let currentPartner = "";
+  let viablePartners = [];
+  let isBusy = false;
+
   if (!_.includes(users, socket.id)) {
     users.push(socket.id);
   }
@@ -33,30 +39,56 @@ io.on("connection", (socket) => {
   io.sockets.emit("allUsers", users);
 
   socket.on("disconnect", () => {
-    _.pull(users, socket.id)
+    console.log("disconnect " + isBusy);
+    _.pull(users, socket.id);
+    if (_.includes(queue, socket.id)) {
+      _.pull(queue, socket.id);
+    }
+    currentPartner = "";
+    isBusy = false;
   });
 
   socket.on("leaveQueue", () => {
-    _.pull(queue, socket.id)
+    console.log("leaveQueue " + isBusy);
+    if (_.includes(queue, socket.id)) {
+      _.pull(queue, socket.id);
+    }
+    isBusy = false;
   });
 
   socket.on("findPartner", (data) => {
-    if (!queue.length) {
-      queue.push(socket.id);
-    } else {
-      socket.emit("foundPartner");
+    console.log("findPartner " + isBusy);
+    if (!isBusy) {
+      viablePartners = _.filter(queue, (id) => {
+        return id !== currentPartner && id !== socket.id;
+      });
+      if (!viablePartners.length) {
+        if (!_.includes(queue, socket.id)) {
+          queue.push(socket.id);
+          isBusy = true;
+        }
+      } else {
+        isBusy = true;
+        currentPartner = viablePartners[0];
+        _.pull(queue, currentPartner);
+        socket.emit("foundPartner");
+      }
     }
   });
 
   socket.on("initiatorReady", (data) => {
-    io.to(queue[0]).emit("initiatorOffer", {
+    console.log(data.from);
+    console.log("initiatorReady " + isBusy);
+    io.to(currentPartner).emit("initiatorOffer", {
       signal: data.signalData,
       from: data.from,
     });
-    queue = [];
   });
 
   socket.on("initiatorAccepted", (data) => {
+    isBusy = true;
+    currentPartner = data.to;
+    console.log("initiatorAccepted " + isBusy);
     io.to(data.to).emit("chatReady", {
       signal: data.signal,
       from: socket.id,
@@ -64,6 +96,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("close", (data) => {
+    currentPartner = "";
     io.to(data.to).emit("close");
   });
 });

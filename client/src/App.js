@@ -4,7 +4,7 @@ import Peer from "simple-peer";
 
 import Navigation from "./Components/Navigation/Navigation";
 import Footer from "./Components/Footer/Footer";
-
+import Chat from "./Components/Chat/Chat";
 
 import camera from "./Icons/camera.svg";
 import camerastop from "./Icons/camera-stop.svg";
@@ -28,6 +28,7 @@ function App() {
   const [videoMuted, setVideoMuted] = useState(false);
   const [isfullscreen, setFullscreen] = useState(false);
   const [nextDisabled, setNextDisabled] = useState(true);
+  const [messages, setMessages] = useState([]);
 
   const userVideo = useRef();
   const ID = useRef();
@@ -48,6 +49,10 @@ function App() {
       setUsers(users);
     });
 
+    socket.current.on("receiveMessage", (message) => {
+      setUsers(users);
+    });
+
     socket.current.on("initiatorOffer", (data) => {
       setCaller(data.from);
       let from = data.from;
@@ -58,11 +63,12 @@ function App() {
         stream: userVideo.current.srcObject,
       });
 
-      peer._debug = console.log;
+      // peer._debug = console.log;
 
       myPeer.current = peer;
 
       peer.on("signal", (data) => {
+        console.log(new Date().getMilliseconds() + " P2 RECEIVE SIGNALING");
         socket.current.emit("initiatorAccepted", {
           signal: data,
           to: from,
@@ -79,9 +85,10 @@ function App() {
       });
 
       peer.signal(data.signal);
+      console.log(new Date().getMilliseconds() + " P2 SIGNALING");
 
       socket.current.on("close", () => {
-        window.location.reload();
+        // window.location.reload();
       });
     });
 
@@ -106,11 +113,12 @@ function App() {
         stream: userVideo.current.srcObject,
       });
 
-      peer._debug = console.log;
+      // peer._debug = console.log;
 
       myPeer.current = peer;
 
       peer.on("signal", (data) => {
+        console.log(new Date().getMilliseconds() + " P1 RECEIVE SIGNALING");
         socket.current.emit("initiatorReady", {
           signalData: data,
           from: ID.current,
@@ -128,13 +136,14 @@ function App() {
       });
 
       socket.current.on("chatReady", (data) => {
+        console.log(new Date().getMilliseconds() + " P1 SIGNALING");
         setChatOnline(true);
         setCaller(data.from);
         peer.signal(data.signal);
       });
 
       socket.current.on("close", () => {
-        window.location.reload();
+        // window.location.reload();
       });
     });
   }, []);
@@ -158,14 +167,21 @@ function App() {
     });
   }
 
+  function sendMessage() {
+    socket.current.emit("sendMessage", {
+      message: "message",
+    });
+  }
+
   function cancel() {
     setSearchingPartner(false);
+    socket.current.emit("leaveQueue");
   }
 
   function endCall() {
     myPeer.current.destroy();
     socket.current.emit("close", { to: caller });
-    window.location.reload();
+    // window.location.reload();
   }
 
   function shareScreen() {
@@ -320,16 +336,28 @@ function App() {
 
   let landingHTML = (
     <>
-      <Navigation online={users.length}/>
+      <Navigation online={users.length} />
       <main>
         <div className="chatContainer u-margin-top-xxlarge u-margin-bottom-xxlarge">
           <div className="o-wrapper-l">
             <div className="hero flex flex-column">
               <div>
-                <div className="welcomeText">Chat with strangers</div>
-                <div className="descriptionText">across the world for free</div>
-                {nextDisabled && (
-                  <div className="descriptionText">please enable your camera and microphone then refresh the page</div>
+                {chatOnline && (
+                  <Chat messages={messages}/>
+                )}
+                {!chatOnline && (
+                  <div>
+                    <div className="welcomeText">Chat with strangers</div>
+                    <div className="descriptionText">
+                      across the world for free
+                    </div>
+                    {nextDisabled && (
+                      <div className="descriptionText">
+                        please enable your camera and microphone then refresh
+                        the page
+                      </div>
+                    )}
+                  </div>
                 )}
               </div>
               <div className="callBox flex flex-center">
