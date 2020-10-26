@@ -44,8 +44,6 @@ io.on("connection", (socket) => {
     if (_.includes(queue, socket.id)) {
       _.pull(queue, socket.id);
     }
-    currentPartner = "";
-    isBusy = false;
   });
 
   socket.on("leaveQueue", () => {
@@ -53,51 +51,51 @@ io.on("connection", (socket) => {
     if (_.includes(queue, socket.id)) {
       _.pull(queue, socket.id);
     }
-    isBusy = false;
   });
 
   socket.on("findPartner", (data) => {
     console.log("findPartner " + isBusy);
-    if (!isBusy) {
-      viablePartners = _.filter(queue, (id) => {
-        return id !== currentPartner && id !== socket.id;
-      });
-      if (!viablePartners.length) {
-        if (!_.includes(queue, socket.id)) {
-          queue.push(socket.id);
-          isBusy = true;
-        }
-      } else {
+    viablePartners = _.filter(queue, (id) => {
+      return id !== currentPartner && id !== socket.id;
+    });
+    if (!viablePartners.length) {
+      if (!_.includes(queue, socket.id)) {
+        queue.push(socket.id);
         isBusy = true;
-        currentPartner = viablePartners[0];
-        _.pull(queue, currentPartner);
-        socket.emit("foundPartner");
       }
+    } else {
+      isBusy = true;
+      currentPartner = viablePartners[0];
+      let partnerSocket = io.sockets.connected[currentPartner];
+
+      _.pull(queue, currentPartner);
+
+      partnerSocket.emit("peer", {
+        peerId: socket.id,
+        initiator: true,
+      });
+      socket.emit("peer", {
+        peerId: partnerSocket.id,
+        initiator: false,
+      });
     }
   });
 
-  socket.on("initiatorReady", (data) => {
-    console.log(data.from);
-    console.log("initiatorReady " + isBusy);
-    io.to(currentPartner).emit("initiatorOffer", {
-      signal: data.signalData,
-      from: data.from,
-    });
-  });
+  socket.on("signal", (data) => {
+    var socket2 = io.sockets.connected[data.peerId];
+    if (!socket2) {
+      return;
+    }
 
-  socket.on("initiatorAccepted", (data) => {
-    isBusy = true;
-    currentPartner = data.to;
-    console.log("initiatorAccepted " + isBusy);
-    io.to(data.to).emit("chatReady", {
+    socket2.emit("signal", {
       signal: data.signal,
-      from: socket.id,
+      peerId: socket.id,
     });
   });
 
   socket.on("close", (data) => {
     currentPartner = "";
-    io.to(data.to).emit("close");
+    io.to(data.peerId).emit("close");
   });
 });
 

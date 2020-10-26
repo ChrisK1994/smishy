@@ -370,12 +370,12 @@ body {
 }
 
 .userVideoContainer {
-  background-color: rgba(0, 0, 0, 1);
   width: 30%;
   height: calc(50% - 35px);
+  top: calc(50% + 35px);
   position: absolute;
   z-index: 99;
-  top: 70px;
+  background-color: rgba(0, 0, 0, 1);
 }
 
 .userVideo {
@@ -386,12 +386,12 @@ body {
 }
 
 .partnerVideoContainer {
+  background-color: rgba(0, 0, 0, 1);
   width: 30%;
   height: calc(50% - 35px);
-  top: calc(50% + 35px);
   position: absolute;
   z-index: 99;
-  background-color: rgba(0, 0, 0, 1);
+  top: 70px;
 }
 
 .partnerVideo {
@@ -413,7 +413,6 @@ body {
   height: 4rem;
   z-index: 999;
   width: 30%;
-  background-color: rgba(0, 0, 0, 0.1);
 }
 
 .iconContainer {

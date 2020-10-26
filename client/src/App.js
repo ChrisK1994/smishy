@@ -21,7 +21,7 @@ function App() {
   const [yourID, setYourID] = useState("");
   const [users, setUsers] = useState([]);
   const [stream, setStream] = useState();
-  const [caller, setCaller] = useState("");
+  const [partner, setPartner] = useState("");
   const [searchingPartner, setSearchingPartner] = useState(false);
   const [chatOnline, setChatOnline] = useState(false);
   const [audioMuted, setAudioMuted] = useState(false);
@@ -35,6 +35,8 @@ function App() {
   const partnerVideo = useRef();
   const socket = useRef();
   const myPeer = useRef();
+  var peers = {};
+  var debug = require("debug")("client");
 
   useEffect(() => {
     initVideo();
@@ -49,53 +51,12 @@ function App() {
       setUsers(users);
     });
 
-    socket.current.on("receiveMessage", (message) => {
-      setUsers(users);
-    });
-
-    socket.current.on("initiatorOffer", (data) => {
-      setCaller(data.from);
-      let from = data.from;
-      
-      const peer = new Peer({
-        initiator: false,
-        trickle: false,
-        stream: userVideo.current.srcObject,
-      });
-
-      // peer._debug = console.log;
-
-      myPeer.current = peer;
-
-      peer.on("signal", (data) => {
-        console.log(new Date().getMilliseconds() + " P2 RECEIVE SIGNALING");
-        socket.current.emit("initiatorAccepted", {
-          signal: data,
-          to: from,
-        });
-      });
-
-      peer.on("stream", (stream) => {
-        setChatOnline(true);
-        partnerVideo.current.srcObject = stream;
-      });
-
-      peer.on("error", (err) => {
-        endCall();
-      });
-
-      peer.signal(data.signal);
-      console.log(new Date().getMilliseconds() + " P2 SIGNALING");
-
-      socket.current.on("close", () => {
-        // window.location.reload();
-      });
-    });
-
-    socket.current.on("foundPartner", () => {
-      const peer = new Peer({
-        initiator: true,
-        trickle: false,
+    socket.current.on("peer", (data) => {
+      setPartner(data.peerId);
+      let peerId = data.peerId;
+      let peer = new Peer({
+        initiator: data.initiator,
+        trickle: true,
         config: {
           iceServers: [
             {
@@ -113,51 +74,67 @@ function App() {
         stream: userVideo.current.srcObject,
       });
 
-      // peer._debug = console.log;
+      peer._debug = console.log;
 
       myPeer.current = peer;
 
-      peer.on("signal", (data) => {
-        console.log(new Date().getMilliseconds() + " P1 RECEIVE SIGNALING");
-        socket.current.emit("initiatorReady", {
-          signalData: data,
-          from: ID.current,
-        });
-      });
+      debug(
+        "Peer available for connection discovered from signalling server, Peer ID: %s",
+        peerId
+      );
 
-      peer.on("stream", (stream) => {
-        if (partnerVideo.current) {
-          partnerVideo.current.srcObject = stream;
+      socket.current.on("signal", (data) => {
+        if (data.peerId === peerId) {
+          debug("Received signalling data", data, "from Peer ID:", peerId);
+          peer.signal(data.signal);
         }
       });
 
-      peer.on("error", (err) => {
-        endCall();
-      });
-
-      socket.current.on("chatReady", (data) => {
-        console.log(new Date().getMilliseconds() + " P1 SIGNALING");
-        setChatOnline(true);
-        setCaller(data.from);
-        peer.signal(data.signal);
-      });
-
       socket.current.on("close", () => {
-        // window.location.reload();
+        myPeer.current.destroy();
+        setChatOnline(false);
       });
+
+      peer.on("signal", (data) => {
+        debug("Advertising signalling data", data, "to Peer ID:", peerId);
+        socket.current.emit("signal", {
+          signal: data,
+          peerId: peerId,
+        });
+      });
+
+      peer.on("error", (e) => {
+        debug("Error sending connection to peer %s:", peerId, e);
+      });
+
+      peer.on("connect", () => {
+        debug("Peer connection established");
+        peer.send("hey peer");
+      });
+
+      peer.on("data", (data) => {
+        debug("Recieved data from peer:", data);
+      });
+
+      peer.on("stream", (stream) => {
+        setChatOnline(true);
+        setSearchingPartner(false);
+        partnerVideo.current.srcObject = stream;
+      });
+      peers[peerId] = peer;
     });
   }, []);
 
   function initVideo() {
     navigator.mediaDevices
-    .getUserMedia({ video: true, audio: true })
-    .then((stream) => {
-      setStream(stream);
-      setNextDisabled(false);
-      if (userVideo.current) {
-        userVideo.current.srcObject = stream;
-      }
-    })
+      .getUserMedia({ video: true, audio: true })
+      .then((stream) => {
+        setStream(stream);
+        setNextDisabled(false);
+        if (userVideo.current) {
+          userVideo.current.srcObject = stream;
+        }
+      });
   }
 
   function next() {
@@ -180,7 +157,8 @@ function App() {
 
   function endCall() {
     myPeer.current.destroy();
-    socket.current.emit("close", { to: caller });
+    socket.current.emit("close", { peerId: partner });
+    setChatOnline(false);
     // window.location.reload();
   }
 
@@ -342,9 +320,7 @@ function App() {
           <div className="o-wrapper-l">
             <div className="hero flex flex-column">
               <div>
-                {chatOnline && (
-                  <Chat messages={messages}/>
-                )}
+                {chatOnline && <Chat messages={messages} />}
                 {!chatOnline && (
                   <div>
                     <div className="welcomeText">Chat with strangers</div>
@@ -386,8 +362,8 @@ function App() {
         <Suspense fallback={<div>Loading...</div>}>
           <Watermark />
         </Suspense>
-        <div className="userVideoContainer">{UserVideo}</div>
         <div className="partnerVideoContainer">{PartnerVideo}</div>
+        <div className="userVideoContainer">{UserVideo}</div>
         <div className="controlsContainer flex">
           {audioControl}
           {videoControl}
@@ -396,9 +372,7 @@ function App() {
           {hangUp}
         </div>
       </span>
-      <span>
-        {landingHTML}
-      </span>
+      <span>{landingHTML}</span>
     </>
   );
 }
