@@ -28,7 +28,6 @@ let queue = [];
 io.on("connection", (socket) => {
   console.log("your socket is" + socket.id);
 
-  let currentPartner = "";
   let viablePartners = [];
   let isBusy = false;
 
@@ -39,7 +38,6 @@ io.on("connection", (socket) => {
   io.sockets.emit("allUsers", users);
 
   socket.on("disconnect", () => {
-    console.log("disconnect " + isBusy);
     _.pull(users, socket.id);
     if (_.includes(queue, socket.id)) {
       _.pull(queue, socket.id);
@@ -47,16 +45,14 @@ io.on("connection", (socket) => {
   });
 
   socket.on("leaveQueue", () => {
-    console.log("leaveQueue " + isBusy);
     if (_.includes(queue, socket.id)) {
       _.pull(queue, socket.id);
     }
   });
 
   socket.on("findPartner", (data) => {
-    console.log("findPartner " + isBusy);
     viablePartners = _.filter(queue, (id) => {
-      return id !== currentPartner && id !== socket.id;
+      return id !== socket.id;
     });
     if (!viablePartners.length) {
       if (!_.includes(queue, socket.id)) {
@@ -65,7 +61,7 @@ io.on("connection", (socket) => {
       }
     } else {
       isBusy = true;
-      currentPartner = viablePartners[0];
+      let currentPartner = viablePartners[0];
       let partnerSocket = io.sockets.connected[currentPartner];
 
       _.pull(queue, currentPartner);
@@ -74,6 +70,7 @@ io.on("connection", (socket) => {
         peerId: socket.id,
         initiator: true,
       });
+
       socket.emit("peer", {
         peerId: partnerSocket.id,
         initiator: false,
@@ -94,7 +91,6 @@ io.on("connection", (socket) => {
   });
 
   socket.on("close", (data) => {
-    currentPartner = "";
     io.to(data.peerId).emit("close");
   });
 });

@@ -31,12 +31,9 @@ function App() {
   const [messages, setMessages] = useState([]);
 
   const userVideo = useRef();
-  const ID = useRef();
   const partnerVideo = useRef();
   const socket = useRef();
   const myPeer = useRef();
-  var peers = {};
-  var debug = require("debug")("client");
 
   useEffect(() => {
     initVideo();
@@ -44,7 +41,6 @@ function App() {
 
     socket.current.on("yourID", (id) => {
       setYourID(id);
-      ID.current = id;
     });
 
     socket.current.on("allUsers", (users) => {
@@ -78,25 +74,18 @@ function App() {
 
       myPeer.current = peer;
 
-      debug(
-        "Peer available for connection discovered from signalling server, Peer ID: %s",
-        peerId
-      );
-
       socket.current.on("signal", (data) => {
         if (data.peerId === peerId) {
-          debug("Received signalling data", data, "from Peer ID:", peerId);
           peer.signal(data.signal);
         }
       });
 
       socket.current.on("close", () => {
-        myPeer.current.destroy();
         setChatOnline(false);
+        myPeer.current.destroy();
       });
 
       peer.on("signal", (data) => {
-        debug("Advertising signalling data", data, "to Peer ID:", peerId);
         socket.current.emit("signal", {
           signal: data,
           peerId: peerId,
@@ -104,16 +93,13 @@ function App() {
       });
 
       peer.on("error", (e) => {
-        debug("Error sending connection to peer %s:", peerId, e);
       });
 
       peer.on("connect", () => {
-        debug("Peer connection established");
         peer.send("hey peer");
       });
 
       peer.on("data", (data) => {
-        debug("Recieved data from peer:", data);
       });
 
       peer.on("stream", (stream) => {
@@ -121,7 +107,10 @@ function App() {
         setSearchingPartner(false);
         partnerVideo.current.srcObject = stream;
       });
-      peers[peerId] = peer;
+
+      peer.on('close', () => {
+        setChatOnline(false);
+      })
     });
   }, []);
 
@@ -159,7 +148,6 @@ function App() {
     myPeer.current.destroy();
     socket.current.emit("close", { peerId: partner });
     setChatOnline(false);
-    // window.location.reload();
   }
 
   function shareScreen() {
