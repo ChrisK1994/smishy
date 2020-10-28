@@ -12,7 +12,8 @@
     "react-github-btn": "^1.2.0",
     "react-scripts": "3.4.1",
     "simple-peer": "9.7.2",
-    "socket.io-client": "^2.3.0"
+    "socket.io-client": "^2.3.0",
+    "lodash": "^4.17.20"
   },
   "scripts": {
     "start": "react-scripts start",

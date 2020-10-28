@@ -45,23 +45,24 @@ io.on("connection", (socket) => {
   });
 
   socket.on("leaveQueue", () => {
-    if (_.includes(queue, socket.id)) {
+    if (_.includes(queue, socket.id) && isBusy) {
+      isBusy = false;
       _.pull(queue, socket.id);
     }
   });
 
   socket.on("findPartner", (data) => {
+    isBusy = true;
     viablePartners = _.filter(queue, (id) => {
       return id !== socket.id;
     });
     if (!viablePartners.length) {
       if (!_.includes(queue, socket.id)) {
         queue.push(socket.id);
-        isBusy = true;
       }
     } else {
-      isBusy = true;
       let currentPartner = viablePartners[0];
+      _.pull(queue, currentPartner);
       let partnerSocket = io.sockets.connected[currentPartner];
 
       _.pull(queue, currentPartner);
@@ -90,9 +91,9 @@ io.on("connection", (socket) => {
     });
   });
 
-  socket.on("close", (data) => {
-    io.to(data.peerId).emit("close");
-  });
+  // socket.on("close", (data) => {
+  //   io.to(data.peerId).emit("close");
+  // });
 });
 
 const port = process.env.PORT || 8000;

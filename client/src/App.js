@@ -15,6 +15,8 @@ import hangup from "./Icons/hang-up.svg";
 import fullscreen from "./Icons/fullscreen.svg";
 import minimize from "./Icons/minimize.svg";
 
+const _ = require("lodash");
+
 const Watermark = React.lazy(() => import("./Components/Watermark/Watermark"));
 
 function App() {
@@ -48,11 +50,13 @@ function App() {
     });
 
     socket.current.on("peer", (data) => {
+      socket.current.off("signal");
+
       setPartner(data.peerId);
       let peerId = data.peerId;
       let peer = new Peer({
         initiator: data.initiator,
-        trickle: true,
+        trickle: false,
         config: {
           iceServers: [
             {
@@ -80,10 +84,10 @@ function App() {
         }
       });
 
-      socket.current.on("close", () => {
-        setChatOnline(false);
-        myPeer.current.destroy();
-      });
+      // socket.current.on("close", () => {
+      //   setChatOnline(false);
+      //   myPeer.current.destroy();
+      // });
 
       peer.on("signal", (data) => {
         socket.current.emit("signal", {
@@ -146,7 +150,6 @@ function App() {
 
   function endCall() {
     myPeer.current.destroy();
-    socket.current.emit("close", { peerId: partner });
     setChatOnline(false);
   }
 
