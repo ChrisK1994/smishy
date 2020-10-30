@@ -1,25 +1,32 @@
-import React from 'react'
-import './Chat.css'
+import React, { useEffect, useState } from "react";
+import "./Chat.css";
+import Message from "./Message/Message";
 
 const Chat = (props) => {
-    return (
-      <header className="dropShadow">
-        <div className="headerWrapper">
-          <div className="headerContainer flex">
-            <div className="headerLogoLinkWrapper">
-              <div className="headerLogoLink">
-                <a href="/">
-                  <div className="headerLogo flex flex-row">
-                    <div className="logoText">Smishy</div>
-                    <div className="onlineText"> - online now {props.messages}</div>
-                  </div>
-                </a>
-              </div>
+
+  const [messages, setMessages] = useState(props.messages);
+
+  useEffect(() => { setMessages(messages) }, [props.messages]);
+
+  return (
+    <header className="dropShadow">
+      <div className="headerWrapper">
+        <div className="headerContainer flex">
+          <div className="headerLogoLinkWrapper">
+            <div className="headerLogoLink">
+              <a href="/">
+                <div className="headerLogo flex flex-row">
+                  {messages.map((message, index) => (
+                    <Message key={index} message={message.text} />
+                  ))}
+                </div>
+              </a>
             </div>
           </div>
         </div>
-      </header>
-    );
-  };
+      </div>
+    </header>
+  );
+};
 
-export default Chat
+export default Chat;

@@ -26,8 +26,6 @@ let users = [];
 let queue = [];
 
 io.on("connection", (socket) => {
-  console.log("your socket is" + socket.id);
-
   let viablePartners = [];
   let isBusy = false;
 
@@ -49,6 +47,22 @@ io.on("connection", (socket) => {
       isBusy = false;
       _.pull(queue, socket.id);
     }
+  });
+
+  socket.on("sendMessage", (data) => {
+
+    var socket2 = io.sockets.connected[data.peerId];
+    if (!socket2) {
+      return;
+    }
+
+    socket.emit("messageSent", {
+      message: data.message,
+    });
+
+    socket2.emit("receiveMessage", {
+      message: data.message,
+    });
   });
 
   socket.on("findPartner", (data) => {

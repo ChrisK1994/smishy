@@ -30,7 +30,10 @@ function App() {
   const [videoMuted, setVideoMuted] = useState(false);
   const [isfullscreen, setFullscreen] = useState(false);
   const [nextDisabled, setNextDisabled] = useState(true);
-  const [messages, setMessages] = useState([]);
+  const [inputText, setInputText] = useState("");
+  const [messages, setMessages] = useState([
+    { type: "system", text: "Please stay nice!" },
+  ]);
 
   const userVideo = useRef();
   const partnerVideo = useRef();
@@ -49,10 +52,19 @@ function App() {
       setUsers(users);
     });
 
+    socket.current.on("messageSent", (data) => {
+      setMessages([...messages, { type: "you", text: data.message }]);
+    });
+
+    socket.current.on("receiveMessage", (data) => {
+      setMessages([...messages, { type: "partner", text: data.message }]);
+    });
+
     socket.current.on("peer", (data) => {
       socket.current.off("signal");
 
       setPartner(data.peerId);
+
       let peerId = data.peerId;
       let peer = new Peer({
         initiator: data.initiator,
@@ -74,7 +86,7 @@ function App() {
         stream: userVideo.current.srcObject,
       });
 
-      peer._debug = console.log;
+      // peer._debug = console.log;
 
       myPeer.current = peer;
 
@@ -96,15 +108,13 @@ function App() {
         });
       });
 
-      peer.on("error", (e) => {
-      });
+      peer.on("error", (e) => { });
 
       peer.on("connect", () => {
         peer.send("hey peer");
       });
 
-      peer.on("data", (data) => {
-      });
+      peer.on("data", (data) => { });
 
       peer.on("stream", (stream) => {
         setChatOnline(true);
@@ -112,9 +122,10 @@ function App() {
         partnerVideo.current.srcObject = stream;
       });
 
-      peer.on('close', () => {
+      peer.on("close", () => {
         setChatOnline(false);
-      })
+        setMessages([{ type: "system", text: "Please stay nice!" }]);
+      });
     });
   }, []);
 
@@ -137,10 +148,13 @@ function App() {
     });
   }
 
-  function sendMessage() {
+  function sendMessage(e) {
+    e.preventDefault();
     socket.current.emit("sendMessage", {
-      message: "message",
+      message: inputText,
+      peerId: partner,
     });
+    setInputText("");
   }
 
   function cancel() {
@@ -151,6 +165,7 @@ function App() {
   function endCall() {
     myPeer.current.destroy();
     setChatOnline(false);
+    setMessages([{ type: "system", text: "Please stay nice!" }]);
   }
 
   function shareScreen() {
@@ -312,6 +327,18 @@ function App() {
             <div className="hero flex flex-column">
               <div>
                 {chatOnline && <Chat messages={messages} />}
+                {chatOnline && (
+                  <div className="inputBox">
+                    <form onSubmit={(e) => sendMessage(e)}>
+                      <input
+                        type="text"
+                        value={inputText}
+                        onChange={(e) => setInputText(e.target.value)}
+                      />
+                      <input type="submit" value="Send" />
+                    </form>
+                  </div>
+                )}
                 {!chatOnline && (
                   <div>
                     <div className="welcomeText">Chat with strangers</div>
