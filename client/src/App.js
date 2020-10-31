@@ -53,11 +53,11 @@ function App() {
     });
 
     socket.current.on("messageSent", (data) => {
-      setMessages([...messages, { type: "you", text: data.message }]);
+      setMessages((m) => [...m, { type: "you", text: data.message }]);
     });
 
     socket.current.on("receiveMessage", (data) => {
-      setMessages([...messages, { type: "partner", text: data.message }]);
+      setMessages((m) => [...m, { type: "partner", text: data.message }]);
     });
 
     socket.current.on("peer", (data) => {
@@ -108,13 +108,13 @@ function App() {
         });
       });
 
-      peer.on("error", (e) => { });
+      peer.on("error", (e) => {});
 
       peer.on("connect", () => {
         peer.send("hey peer");
       });
 
-      peer.on("data", (data) => { });
+      peer.on("data", (data) => {});
 
       peer.on("stream", (stream) => {
         setChatOnline(true);
@@ -150,10 +150,12 @@ function App() {
 
   function sendMessage(e) {
     e.preventDefault();
-    socket.current.emit("sendMessage", {
-      message: inputText,
-      peerId: partner,
-    });
+    if (inputText !== "") {
+      socket.current.emit("sendMessage", {
+        message: inputText,
+        peerId: partner,
+      });
+    }
     setInputText("");
   }
 
