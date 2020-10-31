@@ -39,6 +39,7 @@ io.on("connection", (socket) => {
     _.pull(users, socket.id);
     if (_.includes(queue, socket.id)) {
       _.pull(queue, socket.id);
+      isBusy = false;
     }
   });
 
@@ -66,20 +67,19 @@ io.on("connection", (socket) => {
   });
 
   socket.on("findPartner", (data) => {
-    isBusy = true;
     viablePartners = _.filter(queue, (id) => {
       return id !== socket.id;
     });
-    if (!viablePartners.length) {
+    if (!viablePartners.length && !isBusy) {
+      isBusy = true;
       if (!_.includes(queue, socket.id)) {
         queue.push(socket.id);
       }
-    } else {
+    } else if (!isBusy) {
+      isBusy = true;
       let currentPartner = viablePartners[0];
       _.pull(queue, currentPartner);
       let partnerSocket = io.sockets.connected[currentPartner];
-
-      _.pull(queue, currentPartner);
 
       partnerSocket.emit("peer", {
         peerId: socket.id,
@@ -94,11 +94,13 @@ io.on("connection", (socket) => {
   });
 
   socket.on("signal", (data) => {
+    console.log("from " + socket.id + " to " + data.peerId)
     var socket2 = io.sockets.connected[data.peerId];
     if (!socket2) {
       return;
     }
 
+    isBusy = false;
     socket2.emit("signal", {
       signal: data.signal,
       peerId: socket.id,
