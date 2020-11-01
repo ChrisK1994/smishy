@@ -366,11 +366,12 @@ body {
 }
 
 .chatContainer {
-  margin-left: 30%;
+  margin-left: 580px;
 }
 
 .userVideoContainer {
   width: 30%;
+  min-width: 580px;
   height: calc(50% - 35px);
   top: calc(50% + 35px);
   position: absolute;
@@ -381,13 +382,14 @@ body {
 .userVideo {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: fill;
   box-shadow: var(--lift-shadow);
 }
 
 .partnerVideoContainer {
   background-color: rgba(0, 0, 0, 1);
   width: 30%;
+  min-width: 580px;
   height: calc(50% - 35px);
   position: absolute;
   z-index: 99;
@@ -397,12 +399,8 @@ body {
 .partnerVideo {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: fill;
   box-shadow: var(--lift-shadow);
-}
-
-.partnerVideo.cover {
-  object-fit: cover;
 }
 
 .controlsContainer {
@@ -413,6 +411,7 @@ body {
   height: 4rem;
   z-index: 999;
   width: 30%;
+  min-width: 600px;
 }
 
 .iconContainer {
@@ -434,4 +433,8 @@ body {
 .iconContainer img {
   width: 100%;
   height: auto;
+}
+
+.inputBox {
+  height: 70px;
 }

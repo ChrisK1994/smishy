@@ -138,7 +138,7 @@ function App() {
         if (userVideo.current) {
           userVideo.current.srcObject = stream;
         }
-      });
+      })
   }
 
   function next() {
@@ -174,6 +174,7 @@ function App() {
     navigator.mediaDevices
       .getDisplayMedia({ cursor: true })
       .then((screenStream) => {
+        setStream(screenStream);
         myPeer.current.replaceTrack(
           stream.getVideoTracks()[0],
           screenStream.getVideoTracks()[0],
@@ -181,6 +182,7 @@ function App() {
         );
         userVideo.current.srcObject = screenStream;
         screenStream.getTracks()[0].onended = () => {
+          setStream(stream);
           myPeer.current.replaceTrack(
             screenStream.getVideoTracks()[0],
             stream.getVideoTracks()[0],
@@ -234,7 +236,7 @@ function App() {
   if (chatOnline && isfullscreen) {
     PartnerVideo = (
       <video
-        className="partnerVideo cover"
+        className="partnerVideo"
         playsInline
         ref={partnerVideo}
         autoPlay
@@ -324,7 +326,7 @@ function App() {
     <>
       <Navigation online={users.length} />
       <main>
-        <div className="chatContainer u-margin-top-xxlarge u-margin-bottom-xxlarge">
+        <div className="chatContainer">
           <div className="o-wrapper-l">
             <div className="hero flex flex-column">
               <div>
