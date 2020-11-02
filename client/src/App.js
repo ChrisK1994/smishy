@@ -68,7 +68,7 @@ function App() {
       let peerId = data.peerId;
       let peer = new Peer({
         initiator: data.initiator,
-        trickle: false,
+        trickle: true,
         config: {
           iceServers: [
             {
@@ -108,13 +108,13 @@ function App() {
         });
       });
 
-      peer.on("error", (e) => {});
+      peer.on("error", (e) => { });
 
       peer.on("connect", () => {
         peer.send("hey peer");
       });
 
-      peer.on("data", (data) => {});
+      peer.on("data", (data) => { });
 
       peer.on("stream", (stream) => {
         setChatOnline(true);
@@ -138,7 +138,7 @@ function App() {
         if (userVideo.current) {
           userVideo.current.srcObject = stream;
         }
-      })
+      });
   }
 
   function next() {
@@ -235,12 +235,7 @@ function App() {
   let PartnerVideo;
   if (chatOnline && isfullscreen) {
     PartnerVideo = (
-      <video
-        className="partnerVideo"
-        playsInline
-        ref={partnerVideo}
-        autoPlay
-      />
+      <video className="partnerVideo" playsInline ref={partnerVideo} autoPlay />
     );
   } else if (chatOnline && !isfullscreen) {
     PartnerVideo = (
@@ -326,55 +321,47 @@ function App() {
     <>
       <Navigation online={users.length} />
       <main>
-        <div className="chatContainer">
-          <div className="o-wrapper-l">
-            <div className="hero flex flex-column">
-              <div>
-                {chatOnline && <Chat messages={messages} />}
-                {chatOnline && (
-                  <div className="inputBox">
-                    <form onSubmit={(e) => sendMessage(e)}>
-                      <input
-                        type="text"
-                        value={inputText}
-                        onChange={(e) => setInputText(e.target.value)}
-                      />
-                      <input type="submit" value="Send" />
-                    </form>
-                  </div>
-                )}
-                {!chatOnline && (
-                  <div>
-                    <div className="welcomeText">Chat with strangers</div>
-                    <div className="descriptionText">
-                      across the world for free
-                    </div>
-                    {nextDisabled && (
-                      <div className="descriptionText">
-                        please enable your camera and microphone then refresh
-                        the page
-                      </div>
-                    )}
-                  </div>
-                )}
+        <div className="mainContainer">
+          {chatOnline && (
+            <div className="chatContainer">
+              <Chat messages={messages} />
+              <div className="inputBox">
+                <form onSubmit={(e) => sendMessage(e)}>
+                  <input
+                    type="text"
+                    value={inputText}
+                    onChange={(e) => setInputText(e.target.value)}
+                  />
+                  <input type="submit" value="Send" />
+                </form>
               </div>
+            </div>
+          )}
+          {!chatOnline && (
+            <div className="welcomeContainer">
+              <div className="welcomeText flex flex-center">Chat with strangers</div>
+              <div className="descriptionText flex flex-center">across the world for free</div>
+              {nextDisabled && (
+                <div className="descriptionText flex flex-center">
+                  please enable your camera and microphone then refresh the page
+                </div>
+              )}
               <div className="callBox flex flex-center">
-                {!searchingPartner && !nextDisabled && !chatOnline && (
-                  <button onClick={() => next()} className="primaryButton">
+                {!searchingPartner && !nextDisabled && (
+                  <button onClick={() => next()} className="primaryButton next">
                     Next
                   </button>
                 )}
-                {searchingPartner && !nextDisabled && !chatOnline && (
-                  <button onClick={() => cancel()} className="primaryButton">
+                {searchingPartner && !nextDisabled && (
+                  <button onClick={() => cancel()} className="primaryButton cancel">
                     Cancel
                   </button>
                 )}
               </div>
             </div>
-          </div>
+          )}
         </div>
       </main>
-      <Footer />
     </>
   );
 

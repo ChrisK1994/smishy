@@ -35,31 +35,16 @@
   --font-weight-text: 500;
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
-  --home-hero-font-size-a: 3rem;
-  --home-hero-font-size-b: 2.7rem;
-  --home-hero-font-size-c: 1.5rem;
-  --home-hero-font-size-d: 1.5rem;
+  --font-size-a: 3rem;
+  --font-size-b: 2.7rem;
+  --font-size-c: 1.5rem;
 }
-@media screen and (min-width: 20rem) {
+
+@media screen and (min-width: 1160px) {
   :root {
-    --home-hero-font-size-a: 3.6931719654rem;
-    --home-hero-font-size-b: 3.395216879rem;
-    --home-hero-font-size-c: 2rem;
-    --home-hero-font-size-d: 1.5rem;
-  }
-  .u-margin-bottom-xxlarge {
-    margin-bottom: calc(var(--spacing-unit-xxlarge) * 1.25);
-  }
-  .u-margin-top-xxlarge {
-    margin-top: calc(var(--spacing-unit-xxlarge) * 1.25);
-  }
-}
-@media screen and (min-width: 60rem) {
-  :root {
-    --home-hero-font-size-b: 4.55209399rem;
-    --home-hero-font-size-a: 5.0377201155rem;
-    --home-hero-font-size-c: 3rem;
-    --home-hero-font-size-d: 2rem;
+    --font-size-a: 4rem;
+    --font-size-b: 3rem;
+    --font-size-c: 2rem;
   }
   .u-margin-bottom-xxlarge {
     margin-bottom: var(--spacing-unit-xxxxlarge);
@@ -72,6 +57,21 @@
   }
   .primaryButton {
     width: 10rem;
+  }
+}
+
+
+@media screen and (min-width: 600px) {
+  :root {
+    --font-size-a: 3.6rem;
+    --font-size-b: 3.2rem;
+    --font-size-c: 2rem;
+  }
+  .u-margin-bottom-xxlarge {
+    margin-bottom: calc(var(--spacing-unit-xxlarge) * 1.25);
+  }
+  .u-margin-top-xxlarge {
+    margin-top: calc(var(--spacing-unit-xxlarge) * 1.25);
   }
 }
 
@@ -114,140 +114,33 @@ body {
   justify-content: center;
 }
 
-.m-auto {
-  margin: 0 auto;
-}
-
-.o-wrapper-l {
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: var(--site-margin);
-  padding-right: var(--site-margin);
-  max-width: calc(var(--container-width) + var(--site-margin) * 2);
-}
-
-.hero {
-  margin-left: auto;
-  margin-right: auto;
-  width: 100%;
-  text-align: center;
-}
-
 .welcomeText {
-  font-size: var(--home-hero-font-size-a);
+  font-size: var(--font-size-a);
   letter-spacing: -0.0075em;
   line-height: 1.1;
   font-weight: var(--font-weight-semibold);
-  margin-bottom: var(--spacing-unit-tiny);
+  margin-top: var(--spacing-unit-xxxxlarge);
 }
 
 .descriptionText {
-  font-size: var(--home-hero-font-size-c);
+  font-size: var(--font-size-b);
   line-height: 1.35;
   font-weight: var(--font-weight-text);
   letter-spacing: -0.0075em;
   margin-bottom: var(--spacing-unit-large);
 }
 
-.actionText {
-  font-size: var(--home-hero-font-size-d);
-  line-height: 1.35;
-  font-weight: var(--font-weight-regular);
-  letter-spacing: -0.0075em;
-  margin-bottom: var(--spacing-unit);
-}
-
-.username {
-  color: var(--primary-color);
-  cursor: pointer;
-  position: relative;
-}
-
-.username.copied::before {
-  width: max-content;
-  content: "Copied to clipboard";
-  background: rgba(var(--color-dark-background), 1);
-  box-shadow: var(--lift-shadow);
-  padding: var(--spacing-unit-xmicro);
-  border-radius: var(--spacing-unit-micro);
-  font-size: 0.8rem;
-  position: absolute;
-  top: -20px;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.username.copied::after {
-  content: "";
-  background: rgba(var(--color-dark-background), 1);
-  padding: var(--spacing-unit-xmicro);
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  transform: rotate(45deg);
-}
-
-.callBox,
-.disclaimer {
-  margin-bottom: var(--spacing-unit);
-}
-
-.form-input {
-  padding: var(--spacing-unit) var(--spacing-unit-large);
-  width: 100%;
-  border: 3px solid rgba(var(--color-input-border), 1);
-  border-radius: calc(var(--rounded-radius) * 2);
-  font-weight: var(--font-weight-text);
-  line-height: 1.2;
-  background-color: rgba(var(--color-background), 1);
-  color: rgba(var(--color-text), 1);
-  transition: box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  outline: none;
-  margin-right: var(--spacing-unit-large);
-}
-
-.form-input::placeholder,
-.form-input:-moz-placeholder {
-  font-weight: var(--font-weight-text);
-  line-height: 1.2;
-  color: rgba(var(--color-text), 1);
-}
-
-.form-input:hover {
-  box-shadow: 0 1px 4px #0000001a, 0 4px 12px rgba(0, 0, 0, 0.06);
-  box-shadow: var(--lift-shadow);
-}
-
-.form-input:focus {
-  border: 3px solid var(--primary-color);
-  box-shadow: 0 1px 4px #0000001a, 0 4px 12px rgba(0, 0, 0, 0.06);
-  box-shadow: var(--lift-shadow);
-}
-
-.highlight {
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0) 60%,
-    var(--secondary-color-active) 40%
-  );
-}
-
 .primaryButton {
   border: none;
   outline: none;
   cursor: pointer;
-  font-size: var(--home-hero-font-size-d);
+  font-size: var(--font-size-c);
   font-weight: var(--font-weight-semibold);
   line-height: 1.25;
   padding: var(--spacing-unit-small);
-  background-color: var(--secondary-color);
   color: #1f292e;
   border-radius: 0.25rem;
   border-radius: var(--rounded-radius);
-  transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
-    color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
-    box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .primaryButton:hover,
@@ -255,117 +148,37 @@ body {
   box-shadow: var(--lift-shadow);
 }
 
-.primaryButton:hover {
-  background-color: var(--secondary-color-hover);
-}
-
-.primaryButton:active {
-  background-color: var(--secondary-color-active);
-}
-
-.alertButtonPrimary,
-.alertButtonSecondary {
-  border: none;
-  outline: none;
-  width: 4rem;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: var(--font-weight-semibold);
-  line-height: 1.25;
-  padding: var(--spacing-unit-xmicro);
-  color: #1f292e;
-  border-radius: 0.25rem;
-  border-radius: var(--rounded-radius);
+.next {
+  background-color: var(--secondary-color);
   transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
     color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
     box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.alertButtonPrimary {
-  background-color: var(--primary-color);
-}
-
-.alertButtonSecondary {
+.cancel {
   background-color: var(--warning-color);
+  transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.alertButtonPrimary:hover,
-.alertButtonPrimary:active,
-.alertButtonSecondary:hover,
-.alertButtonSecondary:active {
-  box-shadow: var(--lift-shadow);
+.next:hover {
+  background-color: var(--secondary-color-hover);
 }
 
-.alertButtonPrimary:hover {
-  background-color: var(--primary-color-hover);
+.next:active {
+  background-color: var(--secondary-color-active);
 }
 
-.alertButtonSecondary:hover {
+.cancel:hover {
   background-color: var(--warning-color-hover);
 }
 
-.alertButtonPrimary:active {
-  background-color: var(--primary-color-active);
-}
-
-.alertButtonSecondary:active {
+.cancel:active {
   background-color: var(--warning-color-active);
 }
 
-.incomingCallContainer {
-  width: 30%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.1);
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  transition: display 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.incomingCall {
-  height: auto;
-  width: max-content;
-  background-color: #fff;
-  border-radius: calc(var(--rounded-radius) * 2);
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  box-shadow: var(--lift-shadow);
-  padding: var(--site-margin);
-  justify-content: space-between;
-  animation: callAnimation 2s infinite ease-in-out;
-}
-
-@keyframes callAnimation {
-  0% {
-    transform: translate(-50%, -50%) scale(1);
-  }
-  50% {
-    transform: translate(-50%, -50%) scale(1.1);
-  }
-  100% {
-    transform: translate(-50%, -50%) scale(1);
-  }
-}
-
-.callerID {
-  line-height: 1.35;
-  font-weight: var(--font-weight-semibold);
-  letter-spacing: -0.0075em;
-}
-
-.incomingCallButtons {
-  justify-content: space-between;
-  margin-top: var(--spacing-unit);
-}
-
-.callContainer {
-  width: 30%;
-  height: calc(100% - 35px);
-}
-
-.chatContainer {
+.mainContainer {
   margin-left: 580px;
 }
 
