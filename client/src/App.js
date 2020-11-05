@@ -228,18 +228,18 @@ function App() {
   let UserVideo;
   if (stream) {
     UserVideo = (
-      <video className="userVideo" playsInline muted ref={userVideo} autoPlay />
+      <video className="video userVideo" playsInline muted ref={userVideo} autoPlay />
     );
   }
 
   let PartnerVideo;
   if (chatOnline && isfullscreen) {
     PartnerVideo = (
-      <video className="partnerVideo" playsInline ref={partnerVideo} autoPlay />
+      <video className="video partnerVideo" playsInline ref={partnerVideo} autoPlay />
     );
   } else if (chatOnline && !isfullscreen) {
     PartnerVideo = (
-      <video className="partnerVideo" playsInline ref={partnerVideo} autoPlay />
+      <video className="video partnerVideo" playsInline ref={partnerVideo} autoPlay />
     );
   }
 
@@ -371,8 +371,8 @@ function App() {
         <Suspense fallback={<div>Loading...</div>}>
           <Watermark />
         </Suspense>
-        <div className="partnerVideoContainer">{PartnerVideo}</div>
-        <div className="userVideoContainer">{UserVideo}</div>
+        <div className="videoContainer partnerVideoContainer">{PartnerVideo}</div>
+        <div className="videoContainer userVideoContainer">{UserVideo}</div>
         <div className="controlsContainer flex">
           {audioControl}
           {videoControl}

@@ -1,20 +1,20 @@
+.watermark {
+  height: 3rem;
+  position: absolute;
+  left: 500px;
+  top: calc(70px + 40vh);
+  opacity: 0.3;
+  z-index: 200;
+}
 
-.watermark{
-    height: 4rem;
-    position: absolute;
-    top: 80%;
-    left: 6%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    opacity: .6;
+.watermark .logoImage {
+  height: inherit;
+  width: auto;
+}
+
+@media screen and (max-width: 860px) {
+  .watermark {
+    right: 40px;
+    top: calc(70px + 15vh)
   }
-  
-  .watermark .logoImage{
-    height: inherit;
-    width: auto;
-  }
-  
-  .watermark .logoText{
-    color: #fff;
-  }
+}

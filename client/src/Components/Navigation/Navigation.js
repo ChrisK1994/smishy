@@ -8,17 +8,13 @@ const Navigation = (props) => {
       <div className="headerWrapper">
         <div className="headerContainer flex">
           <div className="headerLogoLinkWrapper">
-            <div className="headerLogoLink">
-              <a href="/">
-                <div className="headerLogo flex flex-row">
-                  <div className="logoImg">
-                    <img src={smishylogo} alt="Smishy Logo" />
-                  </div>
-                  <div className="logoText">Smishy</div>
-                  <div className="onlineText"> - online now {props.online}</div>
+              <div className="headerLogo flex flex-row">
+                <div className="logoImg">
+                  <img src={smishylogo} alt="Smishy Logo" />
                 </div>
-              </a>
-            </div>
+                <div className="logoText">Smishy</div>
+                <div className="onlineText"> - online now {props.online}</div>
+              </div>
           </div>
         </div>
       </div>
