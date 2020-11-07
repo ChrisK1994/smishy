@@ -1,14 +1,35 @@
 .messageContainer {
+  width: 100%;
+  display: flex;
+}
+
+.message {
+  font-size: var(--font-size-b);
+  border-radius: 5px;
+  border-width: 2px;
+  border-style: solid;
+  padding: 2px 5px 2px 5px;
+  margin: 6px 6px 0px 6px;
+  word-wrap: break-word;
+  max-width: 50%;
 }
 
 .yourMessage {
-  color: green;
+  background-color: var(--primary-color-background);
+  border-color: var(--primary-color);
+  margin-left: auto;
 }
 
 .partnerMessage {
-  color: red;
+  background-color: var(--secondary-color-background);
+  border-color: var(--secondary-color);
 }
 
 .systemMessage {
-  color: black;
+  background-color: gray;
+  border-color: black;
+}
+
+@media screen and (max-width: 860px) {
+  
 }

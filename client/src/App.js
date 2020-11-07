@@ -3,7 +3,6 @@ import io from "socket.io-client";
 import Peer from "simple-peer";
 
 import Navigation from "./Components/Navigation/Navigation";
-import Footer from "./Components/Footer/Footer";
 import Chat from "./Components/Chat/Chat";
 
 import camera from "./Icons/camera.svg";
@@ -31,9 +30,7 @@ function App() {
   const [isfullscreen, setFullscreen] = useState(false);
   const [nextDisabled, setNextDisabled] = useState(true);
   const [inputText, setInputText] = useState("");
-  const [messages, setMessages] = useState([
-    { type: "system", text: "Please stay nice!" },
-  ]);
+  const [messages, setMessages] = useState([]);
 
   const userVideo = useRef();
   const partnerVideo = useRef();
@@ -108,13 +105,13 @@ function App() {
         });
       });
 
-      peer.on("error", (e) => { });
+      peer.on("error", (e) => {});
 
       peer.on("connect", () => {
         peer.send("hey peer");
       });
 
-      peer.on("data", (data) => { });
+      peer.on("data", (data) => {});
 
       peer.on("stream", (stream) => {
         setChatOnline(true);
@@ -124,7 +121,7 @@ function App() {
 
       peer.on("close", () => {
         setChatOnline(false);
-        setMessages([{ type: "system", text: "Please stay nice!" }]);
+        setMessages([]);
       });
     });
   }, []);
@@ -167,7 +164,7 @@ function App() {
   function endCall() {
     myPeer.current.destroy();
     setChatOnline(false);
-    setMessages([{ type: "system", text: "Please stay nice!" }]);
+    setMessages([]);
   }
 
   function shareScreen() {
@@ -196,7 +193,9 @@ function App() {
   function toggleMuteAudio() {
     if (stream) {
       setAudioMuted(!audioMuted);
-      stream.getAudioTracks()[0].enabled = audioMuted;
+      if (stream.getAudioTracks()[0]) {
+        stream.getAudioTracks()[0].enabled = audioMuted;
+      }
     }
   }
 
@@ -228,18 +227,34 @@ function App() {
   let UserVideo;
   if (stream) {
     UserVideo = (
-      <video className="video userVideo" playsInline muted ref={userVideo} autoPlay />
+      <video
+        className="video userVideo"
+        playsInline
+        muted
+        ref={userVideo}
+        autoPlay
+      />
     );
   }
 
   let PartnerVideo;
   if (chatOnline && isfullscreen) {
     PartnerVideo = (
-      <video className="video partnerVideo" playsInline ref={partnerVideo} autoPlay />
+      <video
+        className="video partnerVideo"
+        playsInline
+        ref={partnerVideo}
+        autoPlay
+      />
     );
   } else if (chatOnline && !isfullscreen) {
     PartnerVideo = (
-      <video className="video partnerVideo" playsInline ref={partnerVideo} autoPlay />
+      <video
+        className="video partnerVideo"
+        playsInline
+        ref={partnerVideo}
+        autoPlay
+      />
     );
   }
 
@@ -325,9 +340,10 @@ function App() {
           {chatOnline && (
             <div className="chatContainer">
               <Chat messages={messages} />
-              <div className="inputBox">
+              <div className="inputContainer">
                 <form onSubmit={(e) => sendMessage(e)}>
                   <input
+                    className="chatInput"
                     type="text"
                     value={inputText}
                     onChange={(e) => setInputText(e.target.value)}
@@ -339,8 +355,12 @@ function App() {
           )}
           {!chatOnline && (
             <div className="welcomeContainer">
-              <div className="welcomeText flex flex-center">Chat with strangers</div>
-              <div className="descriptionText flex flex-center">across the world for free</div>
+              <div className="welcomeText flex flex-center">
+                Chat with strangers
+              </div>
+              <div className="descriptionText flex flex-center">
+                across the world for free
+              </div>
               {nextDisabled && (
                 <div className="descriptionText flex flex-center">
                   please enable your camera and microphone then refresh the page
@@ -353,7 +373,10 @@ function App() {
                   </button>
                 )}
                 {searchingPartner && !nextDisabled && (
-                  <button onClick={() => cancel()} className="primaryButton cancel">
+                  <button
+                    onClick={() => cancel()}
+                    className="primaryButton cancel"
+                  >
                     Cancel
                   </button>
                 )}
@@ -371,7 +394,9 @@ function App() {
         <Suspense fallback={<div>Loading...</div>}>
           <Watermark />
         </Suspense>
-        <div className="videoContainer partnerVideoContainer">{PartnerVideo}</div>
+        <div className="videoContainer partnerVideoContainer">
+          {PartnerVideo}
+        </div>
         <div className="videoContainer userVideoContainer">{UserVideo}</div>
         <div className="controlsContainer flex">
           {audioControl}

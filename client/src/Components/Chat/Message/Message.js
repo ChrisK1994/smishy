@@ -17,7 +17,7 @@ const Message = (props) => {
 
   return (
     <div className="messageContainer">
-      <div className={styleClass}> {props.message.text} </div>
+      <div className={"message " + styleClass}> {props.message.text} </div>
     </div>
   );
 };

@@ -3,9 +3,11 @@
 
 :root {
   --primary-color: #26c6da;
+  --primary-color-background: #3bcbdd;
   --primary-color-hover: rgba(13, 163, 182, 0.08);
   --primary-color-active: rgba(13, 163, 182, 0.16);
   --secondary-color: #ffda68;
+  --secondary-color-background: #ffda68;
   --secondary-color-hover: #ffe082;
   --secondary-color-active: #ffecb3;
   --warning-color: #f44336;
@@ -61,10 +63,10 @@
   --object-fit: fill;
 
   --controls-container-position: absolute;
-  --controls-container-bottom: 0;
+  --controls-container-top: calc(100vh - 70px);
   --controls-container-align-items: center;
   --controls-container-justify-content: space-around;
-  --controls-container-height: 4rem;
+  --controls-container-height: 70px;
   --controls-container-z-index: 999;
   --controls-container-width: 580px;
 
@@ -79,6 +81,8 @@
     cubic-bezier(0.4, 0, 0.2, 1);
 
   --header-wrapper-height: 70px;
+
+  --input-box-height: 70px;
 }
 
 @media screen and (min-width: 861px) {
@@ -104,7 +108,7 @@
 
     --partner-video-container-top: 30px;
 
-    --controls-container-bottom: 45vh;
+    --controls-container-top: 45vh;
     --controls-container-z-index: 999;
     --controls-container-width: 100%;
 
@@ -112,6 +116,8 @@
     --icon-container-cursor: none;
 
     --header-wrapper-height: 30px;
+
+    --input-box-height: 40px;
   }
 }
 
@@ -253,7 +259,7 @@ body {
 
 .controlsContainer {
   position: var(--controls-container-position);
-  bottom: var(--controls-container-bottom);
+  top: var(--controls-container-top);
   align-items: var(--controls-container-align-items);
   justify-content: var(--controls-container-justify-content);
   height: var(--controls-container-height);
@@ -284,6 +290,17 @@ body {
   height: auto;
 }
 
-.inputBox {
-  height: 70px;
+.chatContainer {
+  height: var(--input-box-height);
+}
+
+.chatInput {
+  width: 100%;
+	height: 48px;
+	font: 32px/48px 'Noto Sans', sans-serif;
+	background: none;
+	color: #0AD5C1;
+	border: 0;
+	border-bottom: 1px solid #0AD5C1;
+	outline: none;
 }
