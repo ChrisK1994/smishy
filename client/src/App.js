@@ -348,7 +348,7 @@ function App() {
                     value={inputText}
                     onChange={(e) => setInputText(e.target.value)}
                   />
-                  <input type="submit" value="Send" />
+                  <input className="chatButton" type="submit" value="Send" />
                 </form>
               </div>
             </div>

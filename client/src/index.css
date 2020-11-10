@@ -82,7 +82,7 @@
 
   --header-wrapper-height: 70px;
 
-  --input-box-height: 70px;
+  --input-container-height: 50px;
 }
 
 @media screen and (min-width: 861px) {
@@ -117,7 +117,7 @@
 
     --header-wrapper-height: 30px;
 
-    --input-box-height: 40px;
+    --input-container-height: 40px;
   }
 }
 
@@ -291,16 +291,23 @@ body {
 }
 
 .chatContainer {
-  height: var(--input-box-height);
+}
+
+.inputContainer {
+  height: var(--input-container-height);
 }
 
 .chatInput {
-  width: 100%;
-	height: 48px;
-	font: 32px/48px 'Noto Sans', sans-serif;
+  
+	/* height: 48px; */
+	/* font: 32px/48px 'Noto Sans', sans-serif;
 	background: none;
 	color: #0AD5C1;
 	border: 0;
 	border-bottom: 1px solid #0AD5C1;
-	outline: none;
+	outline: none; */
+}
+
+.chatButton { 
+  
 }
