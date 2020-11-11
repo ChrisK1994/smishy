@@ -82,7 +82,7 @@
 
   --header-wrapper-height: 70px;
 
-  --input-container-height: 50px;
+  --input-container-height: 40px;
 }
 
 @media screen and (min-width: 861px) {
@@ -294,20 +294,41 @@ body {
 }
 
 .inputContainer {
+  bottom: 0;
+  width: 100%;
+  z-index: 99;
   height: var(--input-container-height);
 }
 
 .chatInput {
-  
-	/* height: 48px; */
-	/* font: 32px/48px 'Noto Sans', sans-serif;
-	background: none;
-	color: #0AD5C1;
-	border: 0;
-	border-bottom: 1px solid #0AD5C1;
-	outline: none; */
+  width: calc(100% - 96px);
+  border: 3px solid var(--primary-color);
+  padding: 11px 32px 8px 8px;
+  font-size: 0.8em;
+  outline: none;
 }
 
-.chatButton { 
-  
+.attachmentButton {
+  position: absolute;
+  right: 60px;
+  z-index: 4;
+  margin-top: 12px;
+  font-size: 1.1em;
+  color: var(--primary-color);
+  opacity: 0.5;
+  cursor: pointer;
+}
+
+.chatButton {
+  border: none;
+  width: 50px;
+  padding: 13px 0 11px 0;
+  cursor: pointer;
+  background: var(--primary-color);
+  color: #fff;
+
+  &:hover {
+    background: var(--primary-color-background);
+  }
+  outline: none;
 }

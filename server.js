@@ -5,7 +5,6 @@ const app = express();
 const server = http.createServer(app);
 const socket = require("socket.io");
 const io = socket(server);
-const username = require("username-generator");
 const path = require("path");
 const { AwakeHeroku } = require("awake-heroku");
 const _ = require("lodash");
@@ -51,17 +50,11 @@ io.on("connection", (socket) => {
   });
 
   socket.on("sendMessage", (data) => {
-
-    var socket2 = io.sockets.connected[data.peerId];
-    if (!socket2) {
-      return;
-    }
-
     socket.emit("messageSent", {
       message: data.message,
     });
 
-    socket2.emit("receiveMessage", {
+    io.to(data.peerId).emit("receiveMessage", {
       message: data.message,
     });
   });
@@ -79,29 +72,26 @@ io.on("connection", (socket) => {
       isBusy = true;
       let currentPartner = viablePartners[0];
       _.pull(queue, currentPartner);
-      let partnerSocket = io.sockets.connected[currentPartner];
 
-      partnerSocket.emit("peer", {
+      io.to(currentPartner).emit("peer", {
         peerId: socket.id,
         initiator: true,
       });
 
       socket.emit("peer", {
-        peerId: partnerSocket.id,
+        peerId: currentPartner,
         initiator: false,
       });
     }
   });
 
   socket.on("signal", (data) => {
-    console.log("from " + socket.id + " to " + data.peerId)
-    var socket2 = io.sockets.connected[data.peerId];
-    if (!socket2) {
+    if (!data.peerId) {
       return;
     }
 
     isBusy = false;
-    socket2.emit("signal", {
+    io.to(data.peerId).emit("signal", {
       signal: data.signal,
       peerId: socket.id,
     });

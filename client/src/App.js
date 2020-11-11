@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef, Suspense } from "react";
 import io from "socket.io-client";
 import Peer from "simple-peer";
+import { FaPaperPlane, FaPaperclip } from 'react-icons/fa';
 
 import Navigation from "./Components/Navigation/Navigation";
 import Chat from "./Components/Chat/Chat";
@@ -13,8 +14,6 @@ import share from "./Icons/share.svg";
 import hangup from "./Icons/hang-up.svg";
 import fullscreen from "./Icons/fullscreen.svg";
 import minimize from "./Icons/minimize.svg";
-
-const _ = require("lodash");
 
 const Watermark = React.lazy(() => import("./Components/Watermark/Watermark"));
 
@@ -83,8 +82,6 @@ function App() {
         stream: userVideo.current.srcObject,
       });
 
-      // peer._debug = console.log;
-
       myPeer.current = peer;
 
       socket.current.on("signal", (data) => {
@@ -93,11 +90,6 @@ function App() {
         }
       });
 
-      // socket.current.on("close", () => {
-      //   setChatOnline(false);
-      //   myPeer.current.destroy();
-      // });
-
       peer.on("signal", (data) => {
         socket.current.emit("signal", {
           signal: data,
@@ -105,13 +97,13 @@ function App() {
         });
       });
 
-      peer.on("error", (e) => {});
+      peer.on("error", (e) => { });
 
       peer.on("connect", () => {
         peer.send("hey peer");
       });
 
-      peer.on("data", (data) => {});
+      peer.on("data", (data) => { });
 
       peer.on("stream", (stream) => {
         setChatOnline(true);
@@ -348,7 +340,8 @@ function App() {
                     value={inputText}
                     onChange={(e) => setInputText(e.target.value)}
                   />
-                  <input className="chatButton" type="submit" value="Send" />
+                  <i className="attachmentButton" aria-hidden="true"><FaPaperclip /></i>
+                  <button className="chatButton" type="submit"><FaPaperPlane /></button>
                 </form>
               </div>
             </div>
