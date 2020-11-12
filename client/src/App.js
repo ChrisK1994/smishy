@@ -339,6 +339,7 @@ function App() {
                     type="text"
                     value={inputText}
                     onChange={(e) => setInputText(e.target.value)}
+                    placeholder="Write something..."
                   />
                   <i className="attachmentButton" aria-hidden="true"><FaPaperclip /></i>
                   <button className="chatButton" type="submit"><FaPaperPlane /></button>

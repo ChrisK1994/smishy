@@ -71,4 +71,8 @@
   .headerLogo {
     margin-left: 25px;
   }
+
+  .dropShadow {
+    display: none;
+  }
 }
