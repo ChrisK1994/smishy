@@ -1,33 +1,25 @@
 {
   "files": {
-    "main.css": "/static/css/main.9934f930.chunk.css",
-    "main.js": "/static/js/main.77a7d49e.chunk.js",
-    "main.js.map": "/static/js/main.77a7d49e.chunk.js.map",
+    "main.css": "/static/css/main.4c9f9950.chunk.css",
+    "main.js": "/static/js/main.092661da.chunk.js",
+    "main.js.map": "/static/js/main.092661da.chunk.js.map",
     "runtime-main.js": "/static/js/runtime-main.3acde262.js",
     "runtime-main.js.map": "/static/js/runtime-main.3acde262.js.map",
-    "static/js/2.0377464d.chunk.js": "/static/js/2.0377464d.chunk.js",
-    "static/js/2.0377464d.chunk.js.map": "/static/js/2.0377464d.chunk.js.map",
+    "static/js/2.ff1b6097.chunk.js": "/static/js/2.ff1b6097.chunk.js",
+    "static/js/2.ff1b6097.chunk.js.map": "/static/js/2.ff1b6097.chunk.js.map",
     "static/css/3.589db436.chunk.css": "/static/css/3.589db436.chunk.css",
     "static/js/3.7659586b.chunk.js": "/static/js/3.7659586b.chunk.js",
     "static/js/3.7659586b.chunk.js.map": "/static/js/3.7659586b.chunk.js.map",
     "index.html": "/index.html",
     "static/css/3.589db436.chunk.css.map": "/static/css/3.589db436.chunk.css.map",
-    "static/css/main.9934f930.chunk.css.map": "/static/css/main.9934f930.chunk.css.map",
-    "static/js/2.0377464d.chunk.js.LICENSE.txt": "/static/js/2.0377464d.chunk.js.LICENSE.txt",
-    "static/media/camera-stop.5d5abf1d.svg": "/static/media/camera-stop.5d5abf1d.svg",
-    "static/media/camera.69bb6510.svg": "/static/media/camera.69bb6510.svg",
-    "static/media/fullscreen.fe7e5433.svg": "/static/media/fullscreen.fe7e5433.svg",
-    "static/media/hang-up.0fd93cba.svg": "/static/media/hang-up.0fd93cba.svg",
-    "static/media/microphone-stop.bdea9903.svg": "/static/media/microphone-stop.bdea9903.svg",
-    "static/media/microphone.c954ec03.svg": "/static/media/microphone.c954ec03.svg",
-    "static/media/minimize.34ff6977.svg": "/static/media/minimize.34ff6977.svg",
-    "static/media/share.a5ae5800.svg": "/static/media/share.a5ae5800.svg",
+    "static/css/main.4c9f9950.chunk.css.map": "/static/css/main.4c9f9950.chunk.css.map",
+    "static/js/2.ff1b6097.chunk.js.LICENSE.txt": "/static/js/2.ff1b6097.chunk.js.LICENSE.txt",
     "static/media/smishy-icon.svg": "/static/media/smishy-icon.2fe0e3a2.svg"
   },
   "entrypoints": [
     "static/js/runtime-main.3acde262.js",
-    "static/js/2.0377464d.chunk.js",
-    "static/css/main.9934f930.chunk.css",
-    "static/js/main.77a7d49e.chunk.js"
+    "static/js/2.ff1b6097.chunk.js",
+    "static/css/main.4c9f9950.chunk.css",
+    "static/js/main.092661da.chunk.js"
   ]
 }
