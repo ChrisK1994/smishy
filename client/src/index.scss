@@ -2,14 +2,13 @@
 @import "../src/Components/Navigation/Navigation.css";
 
 :root {
-  --primary-color: #26c6da;
-  --primary-color-background: #3bcbdd;
+  --primary-color: #cc3333;
+  --primary-color-background: #d14747;
   --primary-color-hover: rgba(13, 163, 182, 0.08);
   --primary-color-active: rgba(13, 163, 182, 0.16);
-  --secondary-color: #ffda68;
-  --secondary-color-background: #ffda68;
-  --secondary-color-hover: #ffe082;
-  --secondary-color-active: #ffecb3;
+  --secondary-color: #ff80bf;
+  --secondary-color-background: #ff99cc;
+  --secondary-color-hover: #ffb3d9;
   --warning-color: #f44336;
   --warning-color-hover: #ffcdd2;
   --warning-color-active: #ef9a9a;
@@ -21,19 +20,11 @@
   --grey-1: rgb(120, 144, 156);
   --color-input-border: 228, 232, 235;
   --container-width: 60rem;
-  --rounded-radius: var(--spacing-unit-xmicro);
   --site-margin: var(--spacing-unit);
-  --spacing-unit-xxmicro: 3px;
-  --spacing-unit-xmicro: 0.25rem;
-  --spacing-unit-micro: 0.3535534rem;
   --spacing-unit-tiny: 0.5000000266rem;
   --spacing-unit-small: 0.7071068376rem;
   --spacing-unit: 1.0000001064rem;
   --spacing-unit-large: 1.4142137505rem;
-  --spacing-unit-xlarge: 2.0000003193rem;
-  --spacing-unit-xxlarge: 2.8284276515rem;
-  --spacing-unit-xxxlarge: 4.0000008514rem;
-  --spacing-unit-xxxxlarge: 5.6568556041rem;
   --font-weight-regular: 400;
   --font-weight-text: 500;
   --font-weight-semibold: 600;
@@ -63,7 +54,7 @@
   --object-fit: cover;
 
   --controls-container-position: absolute;
-  --controls-container-top: calc(100vh - 70px);
+  --controls-container-top: calc(100% - 70px);
   --controls-container-align-items: center;
   --controls-container-justify-content: space-around;
   --controls-container-height: 70px;
@@ -83,6 +74,8 @@
   --header-wrapper-height: 70px;
 
   --input-container-height: 40px;
+
+  --welcome-text-margin-top: 200px;
 }
 
 @media screen and (min-width: 861px) {
@@ -95,29 +88,30 @@
     --font-size-c: 1rem;
 
     --main-container-margin-left: 0px;
-    --main-container-margin-top: 50%;
+    --main-container-margin-top: 50vh;
 
     --video-container-width: 100%;
     --video-container-height: 50%;
 
     --user-video-container-top: 2%;
     --user-video-container-right: 2%;
-    --user-video-container-width: 120px;
-    --user-video-container-height: 120px;
+    --user-video-container-width: 80px;
+    --user-video-container-height: 80px;
     --user-video-container-z-index: 100;
 
     --partner-video-container-top: 0;
 
-    --controls-container-top: 40%;
+    --controls-container-top: calc(50% - 60px);
     --controls-container-z-index: 999;
     --controls-container-width: 100%;
+    --controls-container-height: 50px;
 
     --icon-container-padding: 10px;
     --icon-container-cursor: none;
 
     --header-wrapper-height: 30px;
-
-    --input-container-height: 40px;
+    
+    --welcome-text-margin-top: 60vh;
   }
 }
 
@@ -147,18 +141,14 @@ body {
 
 .welcomeText {
   font-size: var(--font-size-a);
-  letter-spacing: -0.0075em;
-  line-height: 1.1;
   font-weight: var(--font-weight-semibold);
-  margin-top: var(--spacing-unit-xxxxlarge);
+  margin-top: var(--welcome-text-margin-top);
   text-align: center;
 }
 
 .descriptionText {
   font-size: var(--font-size-b);
-  line-height: 1.35;
   font-weight: var(--font-weight-text);
-  letter-spacing: -0.0075em;
   margin-bottom: var(--spacing-unit-large);
   text-align: center;
 }
@@ -167,13 +157,10 @@ body {
   border: none;
   outline: none;
   cursor: pointer;
-  font-size: var(--font-size-c);
+  font-size: var(--font-size-b);
   font-weight: var(--font-weight-semibold);
-  line-height: 1.25;
-  padding: var(--spacing-unit-small);
-  color: #1f292e;
+  padding: 10px 30px 10px 30px;
   border-radius: 0.25rem;
-  border-radius: var(--rounded-radius);
 }
 
 .primaryButton:hover,
@@ -234,7 +221,6 @@ body {
 
 .partnerVideoContainer {
   top: var(--partner-video-container-top);
-  min-height: 300px;
 }
 
 .video {
@@ -271,18 +257,26 @@ body {
   width: var(--icon-container-width);
   height: var(--icon-container-height);
   cursor: var(--icon-container-cursor);
-  background-color: var(--primary-color-hover);
+  background-color: transparent;
   box-shadow: var(--lift-shadow);
   transition: var(--icon-container-transition);
 }
 
 .iconContainer:hover {
-  background-color: rgba(var(--color-background), 0.2);
+  background-color: rgba(var(--color-background), 0.1);
 }
 
-.iconContainer img {
+.iconContainer svg {
   width: 100%;
   height: auto;
+}
+
+.iconBasic {
+  color: var(--primary-color-background);
+}
+
+.iconAlternative {
+  color: var(--warning-color);
 }
 
 .chatContainer {

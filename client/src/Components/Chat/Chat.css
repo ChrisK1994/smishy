@@ -8,6 +8,6 @@
 
 @media screen and (max-width: 860px) {
   .chatBox {
-    height: calc(50vh - 80px);
+    height: calc(50vh - 50px);
   }
 }

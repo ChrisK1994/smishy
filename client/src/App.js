@@ -1,19 +1,10 @@
 import React, { useEffect, useState, useRef, Suspense } from "react";
 import io from "socket.io-client";
 import Peer from "simple-peer";
-import { FaPaperPlane, FaPaperclip } from 'react-icons/fa';
+import { FaPaperPlane, FaPaperclip, FaMicrophone, FaMicrophoneSlash, FaVideo, FaVideoSlash, FaPhone, FaExpandArrowsAlt, FaCompressArrowsAlt, FaLaptop } from 'react-icons/fa';
 
 import Navigation from "./Components/Navigation/Navigation";
 import Chat from "./Components/Chat/Chat";
-
-import camera from "./Icons/camera.svg";
-import camerastop from "./Icons/camera-stop.svg";
-import microphone from "./Icons/microphone.svg";
-import microphonestop from "./Icons/microphone-stop.svg";
-import share from "./Icons/share.svg";
-import hangup from "./Icons/hang-up.svg";
-import fullscreen from "./Icons/fullscreen.svg";
-import minimize from "./Icons/minimize.svg";
 
 const Watermark = React.lazy(() => import("./Components/Watermark/Watermark"));
 
@@ -259,13 +250,13 @@ function App() {
     if (audioMuted) {
       audioControl = (
         <span className="iconContainer" onClick={() => toggleMuteAudio()}>
-          <img src={microphonestop} alt="Unmute audio" />
+          <FaMicrophoneSlash className="iconAlternative" alt="Unmute audio" />
         </span>
       );
     } else {
       audioControl = (
         <span className="iconContainer" onClick={() => toggleMuteAudio()}>
-          <img src={microphone} alt="Mute audio" />
+          <FaMicrophone className="iconBasic" alt="Mute audio" />
         </span>
       );
     }
@@ -273,20 +264,20 @@ function App() {
     if (videoMuted) {
       videoControl = (
         <span className="iconContainer" onClick={() => toggleMuteVideo()}>
-          <img src={camerastop} alt="Resume video" />
+          <FaVideoSlash className="iconAlternative" alt="Resume video" />
         </span>
       );
     } else {
       videoControl = (
         <span className="iconContainer" onClick={() => toggleMuteVideo()}>
-          <img src={camera} alt="Stop audio" />
+          <FaVideo className="iconBasic" alt="Stop audio" />
         </span>
       );
     }
 
     screenShare = (
       <span className="iconContainer" onClick={() => shareScreen()}>
-        <img src={share} alt="Share screen" />
+        <FaLaptop className="iconBasic" alt="Share screen" />
       </span>
     );
     if (isMobileDevice()) {
@@ -295,7 +286,7 @@ function App() {
 
     hangUp = (
       <span className="iconContainer" onClick={() => endCall()}>
-        <img src={hangup} alt="End call" />
+        <FaPhone className="iconAlternative" alt="End call" />
       </span>
     );
 
@@ -307,7 +298,7 @@ function App() {
             setFullscreen(false);
           }}
         >
-          <img src={minimize} alt="fullscreen" />
+          <FaCompressArrowsAlt className="iconAlternative" alt="fullscreen" />
         </span>
       );
     } else {
@@ -318,7 +309,7 @@ function App() {
             setFullscreen(true);
           }}
         >
-          <img src={fullscreen} alt="fullscreen" />
+          <FaExpandArrowsAlt className="iconBasic" alt="fullscreen" />
         </span>
       );
     }
@@ -385,9 +376,6 @@ function App() {
   return (
     <>
       <span className="callContainer">
-        <Suspense fallback={<div>Loading...</div>}>
-          <Watermark />
-        </Suspense>
         <div className="videoContainer partnerVideoContainer">
           {PartnerVideo}
         </div>
