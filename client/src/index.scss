@@ -1,5 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap");
-@import "../src/Components/Navigation/Navigation.css";
+@import "../src/Components/Navigation/Navigation.scss";
 
 :root {
   --primary-color: #cc3333;
@@ -73,9 +73,20 @@
 
   --header-wrapper-height: 70px;
 
-  --input-container-height: 40px;
-
   --welcome-text-margin-top: 200px;
+
+  --chat-input-border-width: 4px;
+  --chat-input-border-style: solid;
+  --chat-input-padding: 13px 80px 12px 12px;
+  --chat-input-width: calc(100% - 220px);
+
+  --input-container-height: 70px;
+
+  --attachment-button-right: 140px;
+  --attachment-button-margin-top: 18px;
+
+  --chat-button-width: 120px;
+  --chat-button-padding: 17px 0 16px 0;
 }
 
 @media screen and (min-width: 861px) {
@@ -110,8 +121,21 @@
     --icon-container-cursor: none;
 
     --header-wrapper-height: 30px;
-    
+
     --welcome-text-margin-top: 60vh;
+
+    --chat-input-border-width: 3px;
+    --chat-input-border-style: solid;
+    --chat-input-padding: 8px 42px 8px 8px;
+    --chat-input-width: calc(100% - 116px);
+
+    --input-container-height: 40px;
+
+    --attachment-button-right: 70px;
+    --attachment-button-margin-top: 12px;
+
+    --chat-button-width: 60px;
+    --chat-button-padding: 11px 0 11px 0;
   }
 }
 
@@ -290,34 +314,37 @@ body {
 }
 
 .chatInput {
-  width: calc(100% - 96px);
-  border: 3px solid var(--primary-color);
-  padding: 11px 32px 8px 8px;
-  font-size: 0.8em;
+  width: var(--chat-input-width);
+  border-width: var(--chat-input-border-width);
+  border-style: var(--chat-input-border-style);
+  border-color: var(--primary-color);
+  padding: var(--chat-input-padding);
+  font-size: var(--font-size-b);
   outline: none;
+  height: 100%;
 }
 
 .attachmentButton {
   position: absolute;
-  right: 60px;
+  right: var(--attachment-button-right);
   z-index: 4;
-  margin-top: 12px;
-  font-size: 1.1em;
+  margin-top: var(--attachment-button-margin-top);
+  font-size: var(--font-size-b);
   color: var(--primary-color);
-  opacity: 0.5;
   cursor: pointer;
 }
 
 .chatButton {
   border: none;
-  width: 50px;
-  padding: 13px 0 11px 0;
+  width: var(--chat-button-width);
+  padding: var(--chat-button-padding);
   cursor: pointer;
   background: var(--primary-color);
+  outline: none;
   color: #fff;
+  font-size: var(--font-size-b);
 
   &:hover {
     background: var(--primary-color-background);
   }
-  outline: none;
 }

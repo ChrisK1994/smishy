@@ -1,5 +1,5 @@
 import React from "react";
-import "./Message.css";
+import "./Message.scss";
 
 const Message = (props) => {
   let styleClass;

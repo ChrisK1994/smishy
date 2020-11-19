@@ -1,5 +1,5 @@
 .chatBox {
-  height: calc(100vh - 120px);
+  height: calc(100vh - 150px);
   overflow: auto;
   display: flex;
   flex-direction: column-reverse;
@@ -8,6 +8,7 @@
 
 @media screen and (max-width: 860px) {
   .chatBox {
-    height: calc(50vh - 50px);
+    height: calc(50vh - 45px);
+    padding-bottom: 5px;
   }
 }

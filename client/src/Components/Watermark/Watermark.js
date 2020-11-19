@@ -1,6 +1,6 @@
 import React from 'react'
 import smishylogo from '../../Icons/smishy-icon.svg'
-import './Watermark.css'
+import './Watermark.scss'
 
 function Watermark(){
     return (

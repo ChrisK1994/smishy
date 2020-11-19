@@ -1,10 +1,21 @@
 import React, { useEffect, useState, useRef, Suspense } from "react";
 import io from "socket.io-client";
 import Peer from "simple-peer";
-import { FaPaperPlane, FaPaperclip, FaMicrophone, FaMicrophoneSlash, FaVideo, FaVideoSlash, FaPhone, FaExpandArrowsAlt, FaCompressArrowsAlt, FaLaptop } from 'react-icons/fa';
+import {
+  FaPhotoVideo,
+  FaMicrophone,
+  FaMicrophoneSlash,
+  FaVideo,
+  FaVideoSlash,
+  FaPhone,
+  FaExpandArrowsAlt,
+  FaCompressArrowsAlt,
+  FaLaptop,
+} from "react-icons/fa";
 
 import Navigation from "./Components/Navigation/Navigation";
 import Chat from "./Components/Chat/Chat";
+import Spinner from "./Components/Spinner/Spinner";
 
 const Watermark = React.lazy(() => import("./Components/Watermark/Watermark"));
 
@@ -12,15 +23,17 @@ function App() {
   const [yourID, setYourID] = useState("");
   const [users, setUsers] = useState([]);
   const [stream, setStream] = useState();
+  const [onlyChat, setOnlyChat] = useState(false);
   const [partner, setPartner] = useState("");
   const [searchingPartner, setSearchingPartner] = useState(false);
+  const [foundPartner, setFoundPartner] = useState(false);
   const [chatOnline, setChatOnline] = useState(false);
   const [audioMuted, setAudioMuted] = useState(false);
   const [videoMuted, setVideoMuted] = useState(false);
   const [isfullscreen, setFullscreen] = useState(false);
-  const [nextDisabled, setNextDisabled] = useState(true);
   const [inputText, setInputText] = useState("");
   const [messages, setMessages] = useState([]);
+  const [status, setStatus] = useState("");
 
   const userVideo = useRef();
   const partnerVideo = useRef();
@@ -48,6 +61,8 @@ function App() {
     });
 
     socket.current.on("peer", (data) => {
+      console.log("socket peer");
+
       socket.current.off("signal");
 
       setPartner(data.peerId);
@@ -76,29 +91,37 @@ function App() {
       myPeer.current = peer;
 
       socket.current.on("signal", (data) => {
+        console.log("socket signal");
         if (data.peerId === peerId) {
           peer.signal(data.signal);
         }
       });
 
       peer.on("signal", (data) => {
+        console.log("peer signal");
+
         socket.current.emit("signal", {
           signal: data,
           peerId: peerId,
         });
       });
 
-      peer.on("error", (e) => { });
+      peer.on("error", (e) => {});
 
       peer.on("connect", () => {
+        console.log("peer connect");
+
+        setChatOnline(true);
+        setSearchingPartner(false);
+
         peer.send("hey peer");
       });
 
-      peer.on("data", (data) => { });
+      peer.on("data", (data) => {});
 
       peer.on("stream", (stream) => {
-        setChatOnline(true);
-        setSearchingPartner(false);
+        console.log("peer stream");
+
         partnerVideo.current.srcObject = stream;
       });
 
@@ -110,15 +133,17 @@ function App() {
   }, []);
 
   function initVideo() {
-    navigator.mediaDevices
-      .getUserMedia({ video: true, audio: true })
-      .then((stream) => {
+    navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(
+      (stream) => {
         setStream(stream);
-        setNextDisabled(false);
         if (userVideo.current) {
           userVideo.current.srcObject = stream;
         }
-      });
+      },
+      () => {
+        
+      }
+    );
   }
 
   function next() {
@@ -221,7 +246,7 @@ function App() {
   }
 
   let PartnerVideo;
-  if (chatOnline && isfullscreen) {
+  if (isfullscreen) {
     PartnerVideo = (
       <video
         className="video partnerVideo"
@@ -230,7 +255,7 @@ function App() {
         autoPlay
       />
     );
-  } else if (chatOnline && !isfullscreen) {
+  } else if (!isfullscreen) {
     PartnerVideo = (
       <video
         className="video partnerVideo"
@@ -320,54 +345,42 @@ function App() {
       <Navigation online={users.length} />
       <main>
         <div className="mainContainer">
-          {chatOnline && (
-            <div className="chatContainer">
-              <Chat messages={messages} />
-              <div className="inputContainer">
-                <form onSubmit={(e) => sendMessage(e)}>
-                  <input
-                    className="chatInput"
-                    type="text"
-                    value={inputText}
-                    onChange={(e) => setInputText(e.target.value)}
-                    placeholder="Write something..."
-                  />
-                  <i className="attachmentButton" aria-hidden="true"><FaPaperclip /></i>
-                  <button className="chatButton" type="submit"><FaPaperPlane /></button>
-                </form>
-              </div>
-            </div>
-          )}
-          {!chatOnline && (
-            <div className="welcomeContainer">
-              <div className="welcomeText flex flex-center">
-                Chat with strangers
-              </div>
-              <div className="descriptionText flex flex-center">
-                across the world for free
-              </div>
-              {nextDisabled && (
-                <div className="descriptionText flex flex-center">
-                  please enable your camera and microphone then refresh the page
-                </div>
-              )}
-              <div className="callBox flex flex-center">
-                {!searchingPartner && !nextDisabled && (
-                  <button onClick={() => next()} className="primaryButton next">
+          <div className="chatContainer">
+            {/* <Spinner status={status} /> */}
+            <Chat messages={messages} />
+            <div className="inputContainer">
+              <form onSubmit={(e) => sendMessage(e)}>
+                <input
+                  className="chatInput"
+                  type="text"
+                  value={inputText}
+                  onChange={(e) => setInputText(e.target.value)}
+                  placeholder="Write something..."
+                />
+                <i className="attachmentButton" aria-hidden="true">
+                  <FaPhotoVideo />
+                </i>
+                {chatOnline && (
+                  <button className="chatButton" type="submit">
+                    Send
+                  </button>
+                )}
+                {!chatOnline && !searchingPartner && (
+                  <button onClick={() => next()} className="chatButton next">
                     Next
                   </button>
                 )}
-                {searchingPartner && !nextDisabled && (
+                {!chatOnline && searchingPartner && (
                   <button
                     onClick={() => cancel()}
-                    className="primaryButton cancel"
+                    className="chatButton cancel"
                   >
                     Cancel
                   </button>
                 )}
-              </div>
+              </form>
             </div>
-          )}
+          </div>
         </div>
       </main>
     </>

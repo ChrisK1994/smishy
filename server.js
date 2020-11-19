@@ -22,10 +22,11 @@ app.get("*", (req, res) => {
 });
 
 let users = [];
-let queue = [];
+let queue = [{ id: "", camera: false, microphone: false }];
 
 io.on("connection", (socket) => {
-  let viablePartners = [];
+  let camera = false;
+  let microphone = false;
   let isBusy = false;
 
   if (!_.includes(users, socket.id)) {
@@ -36,16 +37,21 @@ io.on("connection", (socket) => {
 
   socket.on("disconnect", () => {
     _.pull(users, socket.id);
-    if (_.includes(queue, socket.id)) {
-      _.pull(queue, socket.id);
+
+    const userInQueue = _.find(queue, u => u.id === socket.id);
+
+    if (userInQueue) {
+      _.remove(queue, {id: userInQueue.id});
       isBusy = false;
     }
   });
 
   socket.on("leaveQueue", () => {
-    if (_.includes(queue, socket.id) && isBusy) {
+    const userInQueue = _.find(queue, u => u.id === socket.id);
+
+    if (userInQueue && isBusy) {
       isBusy = false;
-      _.pull(queue, socket.id);
+      _.remove(queue, {id: userInQueue.id});
     }
   });
 
@@ -60,26 +66,27 @@ io.on("connection", (socket) => {
   });
 
   socket.on("findPartner", (data) => {
-    viablePartners = _.filter(queue, (id) => {
-      return id !== socket.id;
+    viablePartner = _.find(queue, u => {
+      return u.id !== socket.id && u.camera === camera && u.microphone === microphone
     });
-    if (!viablePartners.length && !isBusy) {
+
+    if (!viablePartner && !isBusy) {
       isBusy = true;
-      if (!_.includes(queue, socket.id)) {
-        queue.push(socket.id);
+      const userInQueue = _.find(queue, u => u.id === socket.id);
+      if (userInQueue) {
+        queue.push({ id: socket.id, camera: data.camera, microphone: data.microphone });
       }
     } else if (!isBusy) {
       isBusy = true;
-      let currentPartner = viablePartners[0];
-      _.pull(queue, currentPartner);
+      _.remove(queue, {id: viablePartner.id});
 
-      io.to(currentPartner).emit("peer", {
+      io.to(viablePartner.id).emit("peer", {
         peerId: socket.id,
         initiator: true,
       });
 
       socket.emit("peer", {
-        peerId: currentPartner,
+        peerId: viablePartner.id,
         initiator: false,
       });
     }

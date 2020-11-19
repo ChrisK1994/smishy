@@ -1,6 +1,6 @@
 import React from "react";
 import smishylogo from "../../Icons/smishy-icon.svg";
-import "../Navigation/Navigation.css";
+import "../Navigation/Navigation.scss";
 
 const Navigation = (props) => {
   return (
