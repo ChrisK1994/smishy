@@ -49,3 +49,19 @@
     }
   }
 }
+
+.spinnerContainer {
+  height: calc(100vh - 70px);
+  font-size: var(--font-size-a);
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+@media screen and (max-width: 860px) {
+  .spinnerContainer {
+    height: calc(50vh);
+  }
+}

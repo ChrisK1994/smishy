@@ -1,0 +1,15 @@
+
+.lockedContainer {
+  font-size: var(--font-size-a);
+  height: calc(100vh - 70px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+@media screen and (max-width: 860px) {
+  .lockedContainer {
+    height: calc(50vh);
+  }
+}

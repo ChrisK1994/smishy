@@ -22,11 +22,9 @@ app.get("*", (req, res) => {
 });
 
 let users = [];
-let queue = [{ id: "", camera: false, microphone: false }];
+let queue = [];
 
 io.on("connection", (socket) => {
-  let camera = false;
-  let microphone = false;
   let isBusy = false;
 
   if (!_.includes(users, socket.id)) {
@@ -43,6 +41,8 @@ io.on("connection", (socket) => {
     if (userInQueue) {
       _.remove(queue, {id: userInQueue.id});
       isBusy = false;
+
+      console.log(queue);
     }
   });
 
@@ -52,6 +52,8 @@ io.on("connection", (socket) => {
     if (userInQueue && isBusy) {
       isBusy = false;
       _.remove(queue, {id: userInQueue.id});
+      
+      console.log(queue);
     }
   });
 
@@ -66,19 +68,26 @@ io.on("connection", (socket) => {
   });
 
   socket.on("findPartner", (data) => {
+    console.log(data);
+
     viablePartner = _.find(queue, u => {
-      return u.id !== socket.id && u.camera === camera && u.microphone === microphone
+      return u.id !== socket.id && u.onlyChat === data.onlyChat
     });
+
+    console.log(viablePartner);
 
     if (!viablePartner && !isBusy) {
       isBusy = true;
       const userInQueue = _.find(queue, u => u.id === socket.id);
-      if (userInQueue) {
-        queue.push({ id: socket.id, camera: data.camera, microphone: data.microphone });
+      if (!userInQueue) {
+        queue.push({ id: socket.id, onlyChat: data.onlyChat });
+        console.log(queue);
       }
     } else if (!isBusy) {
       isBusy = true;
       _.remove(queue, {id: viablePartner.id});
+
+      console.log(queue);
 
       io.to(viablePartner.id).emit("peer", {
         peerId: socket.id,

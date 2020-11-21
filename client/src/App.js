@@ -16,6 +16,7 @@ import {
 import Navigation from "./Components/Navigation/Navigation";
 import Chat from "./Components/Chat/Chat";
 import Spinner from "./Components/Spinner/Spinner";
+import Locked from "./Components/Locked/Locked";
 
 const Watermark = React.lazy(() => import("./Components/Watermark/Watermark"));
 
@@ -27,13 +28,15 @@ function App() {
   const [partner, setPartner] = useState("");
   const [searchingPartner, setSearchingPartner] = useState(false);
   const [foundPartner, setFoundPartner] = useState(false);
-  const [chatOnline, setChatOnline] = useState(false);
+  const [isOnline, setIsOnline] = useState(false);
   const [audioMuted, setAudioMuted] = useState(false);
   const [videoMuted, setVideoMuted] = useState(false);
   const [isfullscreen, setFullscreen] = useState(false);
   const [inputText, setInputText] = useState("");
   const [messages, setMessages] = useState([]);
   const [status, setStatus] = useState("");
+  const [isAppDisabled, setAppDisabled] = useState(false);
+  const [isLoading, setLoading] = useState(false);
 
   const userVideo = useRef();
   const partnerVideo = useRef();
@@ -61,13 +64,22 @@ function App() {
     });
 
     socket.current.on("peer", (data) => {
-      console.log("socket peer");
+      setLoading(true);
+      setStatus("Partner found!")
 
       socket.current.off("signal");
 
       setPartner(data.peerId);
 
       let peerId = data.peerId;
+
+      let srcObject;
+      if (userVideo.current && userVideo.current.srcObject) {
+        srcObject = userVideo.current.srcObject;
+      } else {
+        srcObject = null;
+      }
+
       let peer = new Peer({
         initiator: data.initiator,
         trickle: true,
@@ -85,21 +97,18 @@ function App() {
             },
           ],
         },
-        stream: userVideo.current.srcObject,
+        stream: srcObject,
       });
 
       myPeer.current = peer;
 
       socket.current.on("signal", (data) => {
-        console.log("socket signal");
         if (data.peerId === peerId) {
           peer.signal(data.signal);
         }
       });
 
       peer.on("signal", (data) => {
-        console.log("peer signal");
-
         socket.current.emit("signal", {
           signal: data,
           peerId: peerId,
@@ -109,10 +118,9 @@ function App() {
       peer.on("error", (e) => {});
 
       peer.on("connect", () => {
-        console.log("peer connect");
-
-        setChatOnline(true);
+        setIsOnline(true);
         setSearchingPartner(false);
+        setLoading(false);
 
         peer.send("hey peer");
       });
@@ -120,13 +128,12 @@ function App() {
       peer.on("data", (data) => {});
 
       peer.on("stream", (stream) => {
-        console.log("peer stream");
 
         partnerVideo.current.srcObject = stream;
       });
 
       peer.on("close", () => {
-        setChatOnline(false);
+        setIsOnline(false);
         setMessages([]);
       });
     });
@@ -134,14 +141,14 @@ function App() {
 
   function initVideo() {
     navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(
-      (stream) => {
-        setStream(stream);
+      (newStream) => {
+        setStream(newStream);
         if (userVideo.current) {
-          userVideo.current.srcObject = stream;
+          userVideo.current.srcObject = newStream;
         }
       },
       () => {
-        
+        setAppDisabled(true);
       }
     );
   }
@@ -150,6 +157,7 @@ function App() {
     setSearchingPartner(true);
     socket.current.emit("findPartner", {
       from: yourID,
+      onlyChat: onlyChat,
     });
   }
 
@@ -171,15 +179,13 @@ function App() {
 
   function endCall() {
     myPeer.current.destroy();
-    setChatOnline(false);
+    setIsOnline(false);
     setMessages([]);
   }
 
   function shareScreen() {
-    navigator.mediaDevices
-      .getDisplayMedia({ cursor: true })
-      .then((screenStream) => {
-        setStream(screenStream);
+    navigator.mediaDevices.getDisplayMedia({ cursor: true }).then(
+      (screenStream) => {
         myPeer.current.replaceTrack(
           stream.getVideoTracks()[0],
           screenStream.getVideoTracks()[0],
@@ -187,7 +193,6 @@ function App() {
         );
         userVideo.current.srcObject = screenStream;
         screenStream.getTracks()[0].onended = () => {
-          setStream(stream);
           myPeer.current.replaceTrack(
             screenStream.getVideoTracks()[0],
             stream.getVideoTracks()[0],
@@ -195,7 +200,11 @@ function App() {
           );
           userVideo.current.srcObject = stream;
         };
-      });
+      },
+      (err) => {
+        console.log(err);
+      }
+    );
   }
 
   function toggleMuteAudio() {
@@ -271,7 +280,7 @@ function App() {
   let fullscreenButton;
   let screenShare;
   let hangUp;
-  if (chatOnline) {
+  if (isOnline) {
     if (audioMuted) {
       audioControl = (
         <span className="iconContainer" onClick={() => toggleMuteAudio()}>
@@ -345,42 +354,45 @@ function App() {
       <Navigation online={users.length} />
       <main>
         <div className="mainContainer">
-          <div className="chatContainer">
-            {/* <Spinner status={status} /> */}
-            <Chat messages={messages} />
-            <div className="inputContainer">
-              <form onSubmit={(e) => sendMessage(e)}>
-                <input
-                  className="chatInput"
-                  type="text"
-                  value={inputText}
-                  onChange={(e) => setInputText(e.target.value)}
-                  placeholder="Write something..."
-                />
-                <i className="attachmentButton" aria-hidden="true">
-                  <FaPhotoVideo />
-                </i>
-                {chatOnline && (
-                  <button className="chatButton" type="submit">
-                    Send
-                  </button>
-                )}
-                {!chatOnline && !searchingPartner && (
-                  <button onClick={() => next()} className="chatButton next">
-                    Next
-                  </button>
-                )}
-                {!chatOnline && searchingPartner && (
-                  <button
-                    onClick={() => cancel()}
-                    className="chatButton cancel"
-                  >
-                    Cancel
-                  </button>
-                )}
-              </form>
+          {isAppDisabled && <Locked />}
+          {isLoading && <Spinner status={status} />}
+          {!isAppDisabled && (
+            <div>
+              <Chat messages={messages} />
+              <div className="inputContainer">
+                <form onSubmit={(e) => sendMessage(e)}>
+                  <input
+                    className="chatInput"
+                    type="text"
+                    value={inputText}
+                    onChange={(e) => setInputText(e.target.value)}
+                    placeholder="Write something..."
+                  />
+                  <i className="attachmentButton" aria-hidden="true">
+                    <FaPhotoVideo />
+                  </i>
+                  {isOnline && (
+                    <button className="chatButton" type="submit">
+                      Send
+                    </button>
+                  )}
+                  {!isOnline && !searchingPartner && (
+                    <button onClick={() => next()} className="chatButton next">
+                      Next
+                    </button>
+                  )}
+                  {!isOnline && searchingPartner && (
+                    <button
+                      onClick={() => cancel()}
+                      className="chatButton cancel"
+                    >
+                      Cancel
+                    </button>
+                  )}
+                </form>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </main>
     </>
@@ -401,6 +413,7 @@ function App() {
           {hangUp}
         </div>
       </span>
+
       <span>{landingHTML}</span>
     </>
   );
