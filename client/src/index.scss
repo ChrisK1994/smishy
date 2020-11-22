@@ -306,7 +306,7 @@ body {
 .inputContainer {
   bottom: 0;
   width: 100%;
-  z-index: 99;
+  z-index: 2;
   height: var(--input-container-height);
 }
 
@@ -324,7 +324,7 @@ body {
 .attachmentButton {
   position: absolute;
   right: var(--attachment-button-right);
-  z-index: 4;
+  z-index: 3;
   margin-top: var(--attachment-button-margin-top);
   font-size: var(--font-size-b);
   color: var(--primary-color);

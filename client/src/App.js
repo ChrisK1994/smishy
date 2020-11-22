@@ -34,7 +34,7 @@ function App() {
   const [isfullscreen, setFullscreen] = useState(false);
   const [inputText, setInputText] = useState("");
   const [messages, setMessages] = useState([]);
-  const [status, setStatus] = useState("");
+  const [status, setStatus] = useState("Mock status!");
   const [isAppDisabled, setAppDisabled] = useState(false);
   const [isLoading, setLoading] = useState(false);
 
@@ -43,9 +43,18 @@ function App() {
   const socket = useRef();
   const myPeer = useRef();
 
+
   useEffect(() => {
     initVideo();
     socket.current = io.connect("/");
+
+    window.onbeforeunload = (event) => {
+      if(myPeer.current){
+        console.log("destroying");
+        myPeer.current.destroy();
+        socket.current.emit("disconnect");
+      }
+    };
 
     socket.current.on("yourID", (id) => {
       setYourID(id);
@@ -65,7 +74,7 @@ function App() {
 
     socket.current.on("peer", (data) => {
       setLoading(true);
-      setStatus("Partner found!")
+      setStatus("Partner found!");
 
       socket.current.off("signal");
 

@@ -1,67 +1,19 @@
-#cool-loader {
-  position: fixed;
-  height: 100%;
-  width: 100%;
-  overflow: hidden;
-  background: rgba(30, 30, 30, 1);
-  color: rgba(255, 255, 255, 0.8);
-
-  .react-spinner-loader-svg {
-    position: relative;
-    margin: 0 auto;
-    width: 128px;
-    margin-top: 20%;
-    text-align: center;
-  }
-
-  .react-spinner-loader-svg svg {
-    -webkit-transform-origin: 50% 65%;
-    transform-origin: 50% 65%;
-  }
-
-  .react-spinner-loader-svg svg polygon {
-    stroke-dasharray: 17;
-    -webkit-animation: dash 2.5s cubic-bezier(0.35, 0.04, 0.63, 0.95) infinite;
-    animation: dash 2.5s cubic-bezier(0.35, 0.04, 0.63, 0.95) infinite;
-  }
-
-  @-webkit-keyframes dash {
-    to {
-      stroke-dashoffset: 136;
-    }
-  }
-
-  @keyframes dash {
-    to {
-      stroke-dashoffset: 136;
-    }
-  }
-  @-webkit-keyframes rotate {
-    100% {
-      -webkit-transform: rotate(360deg);
-      transform: rotate(360deg);
-    }
-  }
-  @keyframes rotate {
-    100% {
-      -webkit-transform: rotate(360deg);
-      transform: rotate(360deg);
-    }
-  }
-}
-
-.spinnerContainer {
+.loading {
   height: calc(100vh - 70px);
+  width: calc(100vw - 580px);
   font-size: var(--font-size-a);
-  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   text-align: center;
+  position: absolute;
+  background-color: rgba($color: #000000, $alpha: 0.5);
+  z-index: 4;
 }
 
 @media screen and (max-width: 860px) {
-  .spinnerContainer {
+  .loading {
     height: calc(50vh);
+    width: 100%;
   }
 }
