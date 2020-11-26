@@ -1,20 +1,21 @@
+$drop-shadow: 0 1px 6px rgba(0, 0, 0, 0.1), 0 4px 24px rgba(0, 0, 0, 0.06);
+
 .headerWrapper {
-  max-width: calc(var(--container-width) + var(--spacing-unit) * 2);
+  max-width: calc(60rem + 1rem * 2);
   margin: 0 auto;
-  height: var(--header-wrapper-height);
+  height: 70px;
 }
 
 .headerContainer {
   justify-content: space-between;
   align-items: center;
-  height: var(--header-wrapper-height);
+  height: 70px;
 }
 
 .headerLogo {
   line-height: 1.2;
   align-items: center;
-  font-size: var(--font-size-b);
-  padding: var(--spacing-unit-xmicro) 0;
+  font-size: 2rem;
 }
 
 .logoImg {
@@ -55,7 +56,7 @@
 }
 
 .dropShadow {
-  box-shadow: var(--drop-shadow);
+  box-shadow: $drop-shadow;
 }
 
 @media screen and (max-width: 860px) {
@@ -74,5 +75,14 @@
 
   .dropShadow {
     display: none;
+  }
+
+  .headerWrapper {
+
+    height: 30px;
+  }
+  
+  .headerContainer {
+    height: 30px;
   }
 }
