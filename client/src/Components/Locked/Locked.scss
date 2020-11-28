@@ -1,6 +1,5 @@
-
 .lockedContainer {
-  font-size: var(--font-size-a);
+  font-size: 3rem;
   height: calc(100vh - 70px);
   display: flex;
   justify-content: center;
@@ -10,6 +9,6 @@
 
 @media screen and (max-width: 860px) {
   .lockedContainer {
-    height: calc(50vh);
+    height: 50vh;
   }
 }

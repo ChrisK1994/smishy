@@ -1,25 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap");
-@import "../src/Components/Navigation/Navigation.scss";
-
-$primary-color: #cc3333;
-$primary-color-background: #d14747;
-$primary-color-hover: rgba(13, 163, 182, 0.08);
-$primary-color-active: rgba(13, 163, 182, 0.16);
-
-$secondary-color: #ff80bf;
-$secondary-color-background: #ff99cc;
-$secondary-color-hover: #ffb3d9;
-$secondary-color-active: rgba(13, 163, 182, 0.16);
-
-$warning-color: #f44336;
-$warning-color-background: #ff99cc;
-$warning-color-hover: #ffcdd2;
-$warning-color-active: #ef9a9a;
-
-$button-hover-color: rgba(13, 163, 182, 0.16);
-
-$drop-shadow: 0 1px 6px rgba(0, 0, 0, 0.1), 0 4px 24px rgba(0, 0, 0, 0.06);
-$lift-shadow: 0 1px 4px rgba(0, 0, 0, 0.1), 0 4px 12px rgba(0, 0, 0, 0.06);
+@import "./variables.scss";
 
 html {
 }
@@ -228,6 +208,10 @@ body {
 }
 
 @media screen and (max-width: 860px) {
+  html {
+    font-size: 10px;
+  }
+
   .mainContainer {
     margin-left: 0px;
     margin-top: 50vh;

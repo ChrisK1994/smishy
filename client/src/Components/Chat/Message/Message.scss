@@ -1,10 +1,12 @@
+@import "../../../variables.scss";
+
 .messageContainer {
   width: 100%;
   display: flex;
 }
 
 .message {
-  font-size: var(--font-size-b);
+  font-size: 2rem;
   border-radius: 5px;
   border-width: 2px;
   border-style: solid;
@@ -15,14 +17,14 @@
 }
 
 .yourMessage {
-  background-color: var(--primary-color-background);
-  border-color: var(--primary-color);
+  background-color: $primary-color-background;
+  border-color: $primary-color;
   margin-left: auto;
 }
 
 .partnerMessage {
-  background-color: var(--secondary-color-background);
-  border-color: var(--secondary-color);
+  background-color: $secondary-color-background;
+  border-color: $secondary-color;
 }
 
 .systemMessage {
