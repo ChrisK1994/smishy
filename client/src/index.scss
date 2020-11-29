@@ -126,7 +126,7 @@ body {
   align-items: center;
   justify-content: space-around;
   height: 70px;
-  z-index: default;
+  z-index: 999;
   width: 580px;
 }
 
@@ -209,7 +209,7 @@ body {
 
 @media screen and (max-width: 860px) {
   html {
-    font-size: 10px;
+    font-size: 16px;
   }
 
   .mainContainer {
@@ -238,13 +238,6 @@ body {
 
   .partnerVideoContainer {
     top: 0;
-  }
-
-  .controlsContainer {
-    top: calc(50% - 60px);
-    height: 50px;
-    z-index: 999;
-    width: 100%;
   }
 
   .controlsContainer {

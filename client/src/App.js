@@ -137,7 +137,6 @@ function App() {
       peer.on("data", (data) => {});
 
       peer.on("stream", (stream) => {
-
         partnerVideo.current.srcObject = stream;
       });
 
@@ -157,11 +156,40 @@ function App() {
         }
       },
       () => {
-        setAppDisabled(true);
+        navigator.mediaDevices.getUserMedia({ video: true }).then(
+          (newStream) => {
+            setStream(newStream);
+            if (userVideo.current) {
+              userVideo.current.srcObject = newStream;
+            }
+          },
+          () => {
+            navigator.mediaDevices.getUserMedia({ audio: true }).then(
+              (newStream) => {
+                let width = 580
+                let height = 400;
+                let canvas = Object.assign(document.createElement("canvas"), { width, height });
+                canvas.getContext('2d').fillRect(0, 0, width, height);
+                let stream = canvas.captureStream();
+                let black = Object.assign(stream.getVideoTracks()[0], { enabled: false });
+
+
+                let blackStream = new MediaStream([black, ...newStream.getAudioTracks()]);
+
+                setStream(blackStream);
+                if (userVideo.current) {
+                  userVideo.current.srcObject = blackStream;
+                }
+              },
+              () => {
+                setAppDisabled(true);
+              }
+            );
+          }
+        );
       }
     );
   }
-
   function next() {
     setSearchingPartner(true);
     socket.current.emit("findPartner", {
