@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, Suspense } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import io from "socket.io-client";
 import Peer from "simple-peer";
 import {
@@ -17,8 +17,6 @@ import Navigation from "./Components/Navigation/Navigation";
 import Chat from "./Components/Chat/Chat";
 import Spinner from "./Components/Spinner/Spinner";
 import Locked from "./Components/Locked/Locked";
-
-const Watermark = React.lazy(() => import("./Components/Watermark/Watermark"));
 
 function App() {
   const [yourID, setYourID] = useState("");
@@ -44,12 +42,14 @@ function App() {
   const myPeer = useRef();
 
 
+
+
   useEffect(() => {
     initVideo();
     socket.current = io.connect("/");
 
     window.onbeforeunload = (event) => {
-      if(myPeer.current){
+      if (myPeer.current) {
         console.log("destroying");
         myPeer.current.destroy();
         socket.current.emit("disconnect");
@@ -124,7 +124,7 @@ function App() {
         });
       });
 
-      peer.on("error", (e) => {});
+      peer.on("error", (e) => { });
 
       peer.on("connect", () => {
         setIsOnline(true);
@@ -134,10 +134,15 @@ function App() {
         peer.send("hey peer");
       });
 
-      peer.on("data", (data) => {});
+      peer.on("data", (data) => { });
 
       peer.on("stream", (stream) => {
+        console.log("strimming");
         partnerVideo.current.srcObject = stream;
+
+        // partnerVideo.current.srcObject.onremovetrack = (event) => {
+        //   partnerVideo.current.srcObject = null;
+        // };
       });
 
       peer.on("close", () => {
@@ -146,6 +151,22 @@ function App() {
       });
     });
   }, []);
+
+  function getSilence() {
+    let ctx = new AudioContext(), oscillator = ctx.createOscillator();
+    let dst = oscillator.connect(ctx.createMediaStreamDestination());
+    oscillator.start();
+    return Object.assign(dst.stream.getAudioTracks()[0], { enabled: false });
+  }
+
+  function getBlack() {
+    let width = 580
+    let height = 400;
+    let canvas = Object.assign(document.createElement("canvas"), { width, height });
+    canvas.getContext('2d').fillRect(0, 0, width, height);
+    let stream = canvas.captureStream();
+    return Object.assign(stream.getVideoTracks()[0], { enabled: false });
+  }
 
   function initVideo() {
     navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(
@@ -156,25 +177,21 @@ function App() {
         }
       },
       () => {
+        setOnlyChat(true);
+
         navigator.mediaDevices.getUserMedia({ video: true }).then(
           (newStream) => {
-            setStream(newStream);
+            let silenceStream = new MediaStream([getSilence(), ...newStream.getVideoTracks()]);
+
+            setStream(silenceStream);
             if (userVideo.current) {
-              userVideo.current.srcObject = newStream;
+              userVideo.current.srcObject = silenceStream;
             }
           },
           () => {
             navigator.mediaDevices.getUserMedia({ audio: true }).then(
               (newStream) => {
-                let width = 580
-                let height = 400;
-                let canvas = Object.assign(document.createElement("canvas"), { width, height });
-                canvas.getContext('2d').fillRect(0, 0, width, height);
-                let stream = canvas.captureStream();
-                let black = Object.assign(stream.getVideoTracks()[0], { enabled: false });
-
-
-                let blackStream = new MediaStream([black, ...newStream.getAudioTracks()]);
+                let blackStream = new MediaStream([getBlack(), ...newStream.getAudioTracks()]);
 
                 setStream(blackStream);
                 if (userVideo.current) {
@@ -182,7 +199,12 @@ function App() {
                 }
               },
               () => {
-                setAppDisabled(true);
+                let dummyStream = new MediaStream([getSilence(), getBlack()]);
+
+                setStream(dummyStream);
+                if (userVideo.current) {
+                  userVideo.current.srcObject = dummyStream;
+                }
               }
             );
           }
