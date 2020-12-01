@@ -41,9 +41,6 @@ function App() {
   const socket = useRef();
   const myPeer = useRef();
 
-
-
-
   useEffect(() => {
     initVideo();
     socket.current = io.connect("/");
@@ -146,6 +143,7 @@ function App() {
       });
 
       peer.on("close", () => {
+        console.log("partner closed");
         setIsOnline(false);
         setMessages([]);
       });

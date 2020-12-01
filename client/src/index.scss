@@ -81,12 +81,12 @@ body {
 }
 
 .mainContainer {
-  margin-left: 580px;
+  margin-left: 35vw;
   margin-top: 0;
 }
 
 .videoContainer {
-  width: 580px;
+  width: 35vw;
   position: absolute;
   z-index: 99;
   background-color: rgba(0, 0, 0, 1);
@@ -96,7 +96,7 @@ body {
 .userVideoContainer {
   top: calc(50% + 35px);
   right: default;
-  width: 580px;
+  width: 35vw;
   height: calc(50% - 35px);
   z-index: default;
 }
@@ -127,7 +127,7 @@ body {
   justify-content: space-around;
   height: 70px;
   z-index: 999;
-  width: 580px;
+  width: 35vw;
 }
 
 .iconContainer {
