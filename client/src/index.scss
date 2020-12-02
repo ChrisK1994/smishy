@@ -101,8 +101,23 @@ body {
   z-index: default;
 }
 
+.userVideoFull {
+  position: absolute;
+  top: 0;
+  width: 50vw;
+  height: 100%; 
+}
+
 .partnerVideoContainer {
   top: 70px;
+}
+
+.partnerVideoFull {
+  height: 100%;  
+  width: 50vw;
+  position: absolute;
+  top: 0;
+  left: 50vw;
 }
 
 .video {
@@ -128,6 +143,10 @@ body {
   height: 70px;
   z-index: 999;
   width: 35vw;
+}
+
+.controlsFull {
+  width: 50vw;
 }
 
 .iconContainer {
@@ -235,9 +254,19 @@ body {
     height: 80px;
     z-index: 100;
   }
+  
+  .userVideoFull {
+    width: 100px;
+    height: 100px;
+  }
 
   .partnerVideoContainer {
     top: 0;
+  }
+
+  .partnerVideoFull {
+    height: 100%;
+    left: 0;
   }
 
   .controlsContainer {
@@ -245,6 +274,11 @@ body {
     height: 50px;
     z-index: 999;
     width: 100%;
+  }
+
+  .controlsFull {
+    top: initial;
+    bottom: 5%;
   }
 
   .iconContainer {

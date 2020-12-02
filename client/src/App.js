@@ -29,7 +29,7 @@ function App() {
   const [isOnline, setIsOnline] = useState(false);
   const [audioMuted, setAudioMuted] = useState(false);
   const [videoMuted, setVideoMuted] = useState(false);
-  const [isfullscreen, setFullscreen] = useState(false);
+  const [isFullScreen, setFullscreen] = useState(false);
   const [inputText, setInputText] = useState("");
   const [messages, setMessages] = useState([]);
   const [status, setStatus] = useState("Mock status!");
@@ -312,7 +312,7 @@ function App() {
   }
 
   let PartnerVideo;
-  if (isfullscreen) {
+  if (isFullScreen) {
     PartnerVideo = (
       <video
         className="video partnerVideo"
@@ -321,7 +321,7 @@ function App() {
         autoPlay
       />
     );
-  } else if (!isfullscreen) {
+  } else if (!isFullScreen) {
     PartnerVideo = (
       <video
         className="video partnerVideo"
@@ -381,7 +381,7 @@ function App() {
       </span>
     );
 
-    if (isfullscreen) {
+    if (isFullScreen) {
       fullscreenButton = (
         <span
           className="iconContainer"
@@ -458,11 +458,11 @@ function App() {
   return (
     <>
       <span className="callContainer">
-        <div className="videoContainer partnerVideoContainer">
+        <div className={"videoContainer partnerVideoContainer " + (isFullScreen? "partnerVideoFull" : "")}>
           {PartnerVideo}
         </div>
-        <div className="videoContainer userVideoContainer">{UserVideo}</div>
-        <div className="controlsContainer flex">
+        <div className={"videoContainer userVideoContainer " + (isFullScreen? "userVideoFull" : "")}>{UserVideo}</div>
+        <div className={"controlsContainer flex " + (isFullScreen? "controlsFull" : "")}>
           {audioControl}
           {videoControl}
           {screenShare}
@@ -471,7 +471,7 @@ function App() {
         </div>
       </span>
 
-      <span>{landingHTML}</span>
+      {!isFullScreen && <span>{landingHTML}</span> }
     </>
   );
 }
