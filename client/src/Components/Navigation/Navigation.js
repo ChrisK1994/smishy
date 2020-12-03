@@ -1,5 +1,4 @@
 import React from "react";
-import smishylogo from "../../Icons/smishy-icon.svg";
 import "../Navigation/Navigation.scss";
 
 const Navigation = (props) => {
@@ -9,9 +8,6 @@ const Navigation = (props) => {
         <div className="headerContainer flex">
           <div className="headerLogoLinkWrapper">
               <div className="headerLogo flex flex-row">
-                <div className="logoImg">
-                  <img src={smishylogo} alt="Smishy Logo" />
-                </div>
                 <div className="logoText">Smishy</div>
                 <div className="onlineText"> - online now {props.online}</div>
               </div>

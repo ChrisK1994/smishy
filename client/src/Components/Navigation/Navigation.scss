@@ -13,24 +13,16 @@
 }
 
 .headerLogo {
-  line-height: 1.2;
   align-items: center;
   font-size: 2rem;
 }
 
-.logoImg {
-  flex-shrink: 0;
-  height: 1.5em;
-}
-
-.logoImg img {
-  height: inherit;
-  width: auto;
-}
-
 .logoText {
+  font-family: 'Great Vibes', cursive;
   margin-left: 0.6em;
   font-weight: 500;
+  font-size: 3rem;
+  color: $primary-color;
 }
 
 .onlineText {

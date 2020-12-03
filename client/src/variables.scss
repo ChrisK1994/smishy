@@ -1,11 +1,14 @@
-$primary-color: #cc3333;
-$primary-color-background: #d14747;
-$primary-color-hover: rgba(13, 163, 182, 0.08);
-$primary-color-active: rgba(13, 163, 182, 0.16);
+$background-color: #111616;
+$font-color: #FFF8E8;
 
-$secondary-color: #ff80bf;
-$secondary-color-background: #ff99cc;
-$secondary-color-hover: #ffb3d9;
+$primary-color: #068D9D;
+$primary-color-background: #06A0B1;
+$primary-color-hover: #07B2C5;
+$primary-color-active: #07B2C5;
+
+$secondary-color: #4F5492;
+$secondary-color-background: #565B9F;
+$secondary-color-hover: #6065A9;
 $secondary-color-active: rgba(13, 163, 182, 0.16);
 
 $warning-color: #f44336;
@@ -15,5 +18,5 @@ $warning-color-active: #ef9a9a;
 
 $button-hover-color: rgba(13, 163, 182, 0.16);
 
-$drop-shadow: 0 1px 6px rgba(0, 0, 0, 0.1), 0 4px 24px rgba(0, 0, 0, 0.06);
-$lift-shadow: 0 1px 4px rgba(0, 0, 0, 0.1), 0 4px 12px rgba(0, 0, 0, 0.06);
+$drop-shadow: 0 1px 6px rgba($primary-color, 0.1), 0 4px 24px rgba($primary-color, 0.06);
+$lift-shadow: 0 1px 4px rgba($primary-color, 0.1), 0 4px 12px rgba($primary-color, 0.06);

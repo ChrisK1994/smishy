@@ -6,12 +6,12 @@
 }
 
 .message {
-  font-size: 2rem;
+  font-size: 1.5rem;
   border-radius: 5px;
   border-width: 2px;
   border-style: solid;
-  padding: 2px 8px 2px 8px;
-  margin: 4px 4px 0px 4px;
+  padding: 4px 8px 4px 8px;
+  margin: 6px 8px 0px 8px;
   word-wrap: break-word;
   max-width: 50%;
 }
@@ -33,5 +33,7 @@
 }
 
 @media screen and (max-width: 860px) {
-  
+  .message {
+    font-size: 1rem;
+  }
 }

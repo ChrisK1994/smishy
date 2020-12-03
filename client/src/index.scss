@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@400;500;600;700&display=swap');
 @import "./variables.scss";
 
 html {
@@ -6,9 +6,10 @@ html {
 
 body {
   margin: 0;
-  font-family: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI",
-    "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
-    "Helvetica Neue", sans-serif;
+  font-family: 'Montserrat', sans-serif;
+  background-color: $background-color;
+  color: $font-color;
+  line-height: 2rem;
 }
 
 .flex {
@@ -103,9 +104,10 @@ body {
 
 .userVideoFull {
   position: absolute;
-  top: 0;
-  width: 50vw;
-  height: 100%; 
+  top: 40px;
+  right: 40px;
+  width: 200px;
+  height: 200px; 
 }
 
 .partnerVideoContainer {
@@ -114,10 +116,9 @@ body {
 
 .partnerVideoFull {
   height: 100%;  
-  width: 50vw;
-  position: absolute;
+  width: 100vw;
   top: 0;
-  left: 50vw;
+  
 }
 
 .video {
@@ -137,26 +138,26 @@ body {
 
 .controlsContainer {
   position: absolute;
-  top: calc(100% - 70px);
+  top: calc(100% - 100px);
   align-items: center;
   justify-content: space-around;
-  height: 70px;
+  height: 100px;
   z-index: 999;
   width: 35vw;
 }
 
 .controlsFull {
-  width: 50vw;
+  width: 100vw;
 }
 
 .iconContainer {
-  padding: 10px;
+  padding: 12px;
   border-radius: 50%;
-  border-width: 2px;
+  border-width: 4px;
   border-style: solid;
   border-color: $primary-color;
-  width: 1.25rem;
-  height: 1.25rem;
+  width: 2rem;
+  height: 2rem;
   cursor: pointer;
   background-color: transparent;
   box-shadow: $lift-shadow;
@@ -196,6 +197,12 @@ body {
   font-size: 2rem;
   outline: none;
   height: 100%;
+  background-color: $background-color;
+  color: $font-color;
+}
+
+.chatInput::placeholder {
+  color: rgba($font-color, 0.8);
 }
 
 .attachmentButton {
@@ -215,7 +222,7 @@ body {
   cursor: pointer;
   background: $primary-color;
   outline: none;
-  color: #fff;
+  color: $font-color;
   font-size: 2rem;
 
   &:hover {
@@ -283,6 +290,11 @@ body {
 
   .iconContainer {
     cursor: none;
+    padding: 10px;
+    border-radius: 50%;
+    border-width: 2px;
+    width: 1.5rem;
+    height: 1.5rem;
   }
 
   .welcomeText {
@@ -303,8 +315,8 @@ body {
 
   .attachmentButton {
     right: 70px;
-    margin-top: 12px;
-    font-size: 1rem;
+    margin-top: 8px;
+    font-size: 1.5rem;
   }
 
   .chatButton {
