@@ -12,23 +12,6 @@ body {
   line-height: 2rem;
 }
 
-.flex {
-  display: flex;
-}
-
-.flex-row {
-  flex-direction: row;
-}
-
-.flex-column {
-  flex-direction: column;
-}
-
-.flex-center {
-  align-items: center;
-  justify-content: center;
-}
-
 .welcomeText {
   font-size: 2rem;
   font-weight: 600;
@@ -144,6 +127,7 @@ body {
   height: 100px;
   z-index: 999;
   width: 35vw;
+  display: flex;
 }
 
 .controlsFull {
