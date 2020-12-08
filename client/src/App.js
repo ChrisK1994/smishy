@@ -93,13 +93,13 @@ function App() {
           iceServers: [
             {
               urls: "stun:numb.viagenie.ca",
-              username: "sultan1640@gmail.com",
-              credential: "98376683",
+              username: "chrisk1994@fajne.to",
+              credential: "123456789",
             },
             {
               urls: "turn:numb.viagenie.ca",
-              username: "sultan1640@gmail.com",
-              credential: "98376683",
+              username: "chrisk1994@fajne.to",
+              credential: "123456789",
             },
           ],
         },
@@ -107,6 +107,7 @@ function App() {
       });
 
       myPeer.current = peer;
+      peer._debug = console.log;
 
       socket.current.on("signal", (data) => {
         if (data.peerId === peerId) {
@@ -121,17 +122,21 @@ function App() {
         });
       });
 
-      peer.on("error", (e) => { });
+      peer.on("error", (e) => {
+        console.log("Error sending connection to peer %s:", peerId, e);
+      });
 
       peer.on("connect", () => {
         setIsOnline(true);
         setSearchingPartner(false);
         setLoading(false);
 
+        console.log("connect");
+
         peer.send("hey peer");
       });
 
-      peer.on("data", (data) => { });
+      peer.on("data", (data) => {});
 
       peer.on("stream", (stream) => {
         console.log("strimming");
@@ -146,22 +151,28 @@ function App() {
         console.log("partner closed");
         setIsOnline(false);
         setMessages([]);
+        setSearchingPartner(false);
+        setLoading(false);
       });
     });
   }, []);
 
   function getSilence() {
-    let ctx = new AudioContext(), oscillator = ctx.createOscillator();
+    let ctx = new AudioContext(),
+      oscillator = ctx.createOscillator();
     let dst = oscillator.connect(ctx.createMediaStreamDestination());
     oscillator.start();
     return Object.assign(dst.stream.getAudioTracks()[0], { enabled: false });
   }
 
   function getBlack() {
-    let width = 580
+    let width = 580;
     let height = 400;
-    let canvas = Object.assign(document.createElement("canvas"), { width, height });
-    canvas.getContext('2d').fillRect(0, 0, width, height);
+    let canvas = Object.assign(document.createElement("canvas"), {
+      width,
+      height,
+    });
+    canvas.getContext("2d").fillRect(0, 0, width, height);
     let stream = canvas.captureStream();
     return Object.assign(stream.getVideoTracks()[0], { enabled: false });
   }
@@ -179,7 +190,10 @@ function App() {
 
         navigator.mediaDevices.getUserMedia({ video: true }).then(
           (newStream) => {
-            let silenceStream = new MediaStream([getSilence(), ...newStream.getVideoTracks()]);
+            let silenceStream = new MediaStream([
+              getSilence(),
+              ...newStream.getVideoTracks(),
+            ]);
 
             setStream(silenceStream);
             if (userVideo.current) {
@@ -189,7 +203,10 @@ function App() {
           () => {
             navigator.mediaDevices.getUserMedia({ audio: true }).then(
               (newStream) => {
-                let blackStream = new MediaStream([getBlack(), ...newStream.getAudioTracks()]);
+                let blackStream = new MediaStream([
+                  getBlack(),
+                  ...newStream.getAudioTracks(),
+                ]);
 
                 setStream(blackStream);
                 if (userVideo.current) {
@@ -458,11 +475,27 @@ function App() {
   return (
     <>
       <span className="callContainer">
-        <div className={"videoContainer partnerVideoContainer " + (isFullScreen? "partnerVideoFull" : "")}>
+        <div
+          className={
+            "videoContainer partnerVideoContainer " +
+            (isFullScreen ? "partnerVideoFull" : "")
+          }
+        >
           {PartnerVideo}
         </div>
-        <div className={"videoContainer userVideoContainer " + (isFullScreen? "userVideoFull" : "")}>{UserVideo}</div>
-        <div className={"controlsContainer flex " + (isFullScreen? "controlsFull" : "")}>
+        <div
+          className={
+            "videoContainer userVideoContainer " +
+            (isFullScreen ? "userVideoFull" : "")
+          }
+        >
+          {UserVideo}
+        </div>
+        <div
+          className={
+            "controlsContainer flex " + (isFullScreen ? "controlsFull" : "")
+          }
+        >
           {audioControl}
           {videoControl}
           {screenShare}
@@ -471,7 +504,7 @@ function App() {
         </div>
       </span>
 
-      {!isFullScreen && <span>{landingHTML}</span> }
+      {!isFullScreen && <span>{landingHTML}</span>}
     </>
   );
 }
