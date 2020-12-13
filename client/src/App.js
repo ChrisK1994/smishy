@@ -35,6 +35,7 @@ function App() {
   const [status, setStatus] = useState("Mock status!");
   const [isAppDisabled, setAppDisabled] = useState(false);
   const [isLoading, setLoading] = useState(false);
+  const [isScreenSharing, setScreenSharing] = useState(false);
 
   const userVideo = useRef();
   const partnerVideo = useRef();
@@ -142,17 +143,15 @@ function App() {
         console.log("strimming");
         partnerVideo.current.srcObject = stream;
 
-        // partnerVideo.current.srcObject.onremovetrack = (event) => {
-        //   partnerVideo.current.srcObject = null;
-        // };
+        partnerVideo.current.srcObject.onremovetrack = (event) => {
+          // console.log("partner track gone");
+          // partnerVideo.current.srcObject = null;
+        };
       });
 
       peer.on("close", () => {
         console.log("partner closed");
-        setIsOnline(false);
-        setMessages([]);
-        setSearchingPartner(false);
-        setLoading(false);
+        resetAppState();
       });
     });
   }, []);
@@ -172,7 +171,8 @@ function App() {
       width,
       height,
     });
-    canvas.getContext("2d").fillRect(0, 0, width, height);
+    let ctx = canvas.getContext("2d");
+    ctx.fillRect(0, 0, width, height);
     let stream = canvas.captureStream();
     return Object.assign(stream.getVideoTracks()[0], { enabled: false });
   }
@@ -208,6 +208,8 @@ function App() {
                   ...newStream.getAudioTracks(),
                 ]);
 
+                console.log("audio is there");
+
                 setStream(blackStream);
                 if (userVideo.current) {
                   userVideo.current.srcObject = blackStream;
@@ -235,6 +237,15 @@ function App() {
     });
   }
 
+  function resetAppState() {
+    setScreenSharing(false);
+    setIsOnline(false);
+    setMessages([]);
+    setSearchingPartner(false);
+    setLoading(false);
+    initVideo();
+  }
+
   function sendMessage(e) {
     e.preventDefault();
     if (inputText !== "") {
@@ -253,8 +264,8 @@ function App() {
 
   function endCall() {
     myPeer.current.destroy();
-    setIsOnline(false);
-    setMessages([]);
+    resetAppState();
+    console.log("ending call");
   }
 
   function shareScreen() {
@@ -266,12 +277,22 @@ function App() {
           stream
         );
         userVideo.current.srcObject = screenStream;
+        setScreenSharing(true);
         screenStream.getTracks()[0].onended = () => {
-          myPeer.current.replaceTrack(
-            screenStream.getVideoTracks()[0],
-            stream.getVideoTracks()[0],
-            stream
-          );
+          setScreenSharing(false);
+          if (onlyChat) {
+            myPeer.current.replaceTrack(
+              screenStream.getVideoTracks()[0],
+              getBlack(),
+              stream
+            );
+          } else {
+            myPeer.current.replaceTrack(
+              screenStream.getVideoTracks()[0],
+              stream.getVideoTracks()[0],
+              stream
+            );
+          }
           userVideo.current.srcObject = stream;
         };
       },
@@ -388,7 +409,7 @@ function App() {
         <FaLaptop className="iconBasic" alt="Share screen" />
       </span>
     );
-    if (isMobileDevice()) {
+    if (isMobileDevice() || isScreenSharing) {
       screenShare = <></>;
     }
 
