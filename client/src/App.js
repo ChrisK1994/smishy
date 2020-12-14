@@ -434,9 +434,8 @@ function App() {
       <Navigation online={users.length} />
       <main>
         <div className="mainContainer">
-          {isAppDisabled && <Locked />}
           {isLoading && <Spinner status={status} />}
-          {!isAppDisabled && (
+          {(
             <div>
               <Chat messages={messages} />
               <div className="inputContainer">
