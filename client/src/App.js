@@ -48,7 +48,6 @@ function App() {
 
     window.onbeforeunload = (event) => {
       if (myPeer.current) {
-        console.log("destroying");
         myPeer.current.destroy();
         socket.current.emit("disconnect");
       }
@@ -132,25 +131,16 @@ function App() {
         setSearchingPartner(false);
         setLoading(false);
 
-        console.log("connect");
-
         peer.send("hey peer");
       });
 
       peer.on("data", (data) => {});
 
       peer.on("stream", (stream) => {
-        console.log("strimming");
         partnerVideo.current.srcObject = stream;
-
-        partnerVideo.current.srcObject.onremovetrack = (event) => {
-          // console.log("partner track gone");
-          // partnerVideo.current.srcObject = null;
-        };
       });
 
       peer.on("close", () => {
-        console.log("partner closed");
         resetAppState();
       });
     });
@@ -208,8 +198,6 @@ function App() {
                   ...newStream.getAudioTracks(),
                 ]);
 
-                console.log("audio is there");
-
                 setStream(blackStream);
                 if (userVideo.current) {
                   userVideo.current.srcObject = blackStream;
@@ -265,7 +253,6 @@ function App() {
   function endCall() {
     myPeer.current.destroy();
     resetAppState();
-    console.log("ending call");
   }
 
   function shareScreen() {
