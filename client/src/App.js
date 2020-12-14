@@ -25,7 +25,6 @@ function App() {
   const [onlyChat, setOnlyChat] = useState(false);
   const [partner, setPartner] = useState("");
   const [searchingPartner, setSearchingPartner] = useState(false);
-  const [foundPartner, setFoundPartner] = useState(false);
   const [isOnline, setIsOnline] = useState(false);
   const [audioMuted, setAudioMuted] = useState(false);
   const [videoMuted, setVideoMuted] = useState(false);
@@ -33,7 +32,6 @@ function App() {
   const [inputText, setInputText] = useState("");
   const [messages, setMessages] = useState([]);
   const [status, setStatus] = useState("Mock status!");
-  const [isAppDisabled, setAppDisabled] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [isScreenSharing, setScreenSharing] = useState(false);
 
