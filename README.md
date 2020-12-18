@@ -1,7 +1,8 @@
 <div align="center">
 <b>Smishy</b> - video chat with random people, like </b>Omegle</b> or </b>Chatroulette</b>
 
-This project is using <b>WebRTC, WebSockets, React, Node.js, SCSS, YARN</b> 
+This project is using <b>WebRTC, WebSockets, React, Node.js, SCSS, YARN</b>
+
 🧪 </b>Smishy is deployed at</b>: https://smishy.herokuapp.com
 </div>
 
