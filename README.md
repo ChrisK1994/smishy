@@ -2,6 +2,7 @@
 <b>Smishy</b> - video chat with random people, like </b>Omegle</b> or </b>Chatroulette</b>
 
 This project is using <b>WebRTC, WebSockets, React, Node.js, SCSS, YARN</b> 
+🧪 </b>Smishy is deployed at</b>: https://smishy.herokuapp.com
 </div>
 
 ⭐ <b>Feature list</b>
@@ -21,8 +22,6 @@ This project is using <b>WebRTC, WebSockets, React, Node.js, SCSS, YARN</b>
 
 🔮 <b>Future</b> 
 1. Photo sharing
-
-🧪 </b>You can check out this app at</b>: https://smishy.herokuapp.com
 
 <b>Local deployment</b> :
 1. Go to server directory and install dependencies using command
