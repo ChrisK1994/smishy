@@ -19,7 +19,6 @@ This project is using <b>WebRTC, WebSockets, React, Node.js, SCSS, YARN</b>
 🐞 <b>Known problems/bugs</b> (feel free to fix them and make a pull request, I don't have time anymore)
 1. Ending call when screen is being shared
 2. Video muting when screen is being shared
-3. Bad STUN/TURN server (they are enough for testing but nothing more)
 
 🔮 <b>Future</b> 
 1. Photo sharing
