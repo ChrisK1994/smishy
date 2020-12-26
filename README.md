@@ -16,7 +16,7 @@ This project is using <b>WebRTC, WebSockets, React, Node.js, SCSS, YARN</b>
 7. Online counter
 8. Mute audio/video
 
-🐞 <b>Known problems/bugs</b> (feel free to fix them and make a pull request, I don't have time anymore)
+🐞 <b>Known problems/bugs</b> (feel free to fix them, these are small bugs)
 1. Ending call when screen is being shared
 2. Video muting when screen is being shared
 
