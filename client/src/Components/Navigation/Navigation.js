@@ -7,7 +7,7 @@ const Navigation = (props) => {
     <header className="dropShadow">
       <div className="headerContainer">
         <div className="headerLogo">
-          <div className="logoText">Smishy</div>
+          <div className="logoText">RomanTechs</div>
           <div className="onlineText">
             {" "}
             {props.online}{" "}
